@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.1.0
+
+- Add whichquote method
+
 ## 2.0.1
 
 - Fix README.md
