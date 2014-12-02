@@ -439,13 +439,13 @@ Puppet::Type.type(:augeasprovider).provide(:default) do
     label || path.split("/")[-1].split("[")[0]
   end
 
-  # Automatically quote a value
+  # Determine which quote is needed
   #
   # @param [String] value the value to quote
   # @param [String] oldvalue the optional old value, used to auto-detect existing quoting
   # @return [String] the quoted value
   # @api public
-  def self.quoteit(value, resource = nil, oldvalue = nil)
+  def self.whichquote(value, resource = nil, oldvalue = nil)
     oldquote = readquote oldvalue
  
     if resource and resource.parameters.include? :quoted
@@ -463,15 +463,26 @@ Puppet::Type.type(:augeasprovider).provide(:default) do
         :none
       end
     end
- 
+
     case quote
     when :double
-      "\"#{value}\""
+      '"'
     when :single
-      "'#{value}'"
+      "'"
     else
-      value
+      ''
     end
+  end
+
+  # Automatically quote a value
+  #
+  # @param [String] value the value to quote
+  # @param [String] oldvalue the optional old value, used to auto-detect existing quoting
+  # @return [String] the quoted value
+  # @api public
+  def self.quoteit(value, resource = nil, oldvalue = nil)
+    quote = whichquote(value, resource, oldvalue)
+    "#{quote}#{value}#{quote}"
   end
  
   # Detect what type of quoting a value uses
@@ -813,6 +824,16 @@ Puppet::Type.type(:augeasprovider).provide(:default) do
   # @api public
   def path_label(aug, path)
     self.class.path_label(aug, path)
+  end
+
+  # Determine which quote is needed
+  #
+  # @param [String] value the value to quote
+  # @param [String] oldvalue the optional old value, used to auto-detect existing quoting
+  # @return [String] the quoted value
+  # @api public
+  def whichquote(value, oldvalue = nil)
+    self.class.whichquote(value, self.resource, oldvalue)
   end
 
   # Automatically quote a value

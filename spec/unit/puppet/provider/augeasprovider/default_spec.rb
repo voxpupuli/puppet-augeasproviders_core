@@ -69,6 +69,49 @@ describe provider_class do
       end
     end
 
+    describe "#whichquote" do
+      it "return an empty string for alphanum values" do
+        subject.whichquote('foo').should == ''
+      end
+
+      it "should double-quote by default for values containing spaces or special characters" do
+        subject.whichquote('foo bar').should == '"'
+        subject.whichquote('foo&bar').should == '"'
+        subject.whichquote('foo;bar').should == '"'
+        subject.whichquote('foo<bar').should == '"'
+        subject.whichquote('foo>bar').should == '"'
+        subject.whichquote('foo(bar').should == '"'
+        subject.whichquote('foo)bar').should == '"'
+        subject.whichquote('foo|bar').should == '"'
+      end
+
+      it "should call #readquote and use its value when oldvalue is passed" do
+        subject.whichquote('foo', nil, "'bar'").should == "'"
+        subject.whichquote('foo', nil, '"bar"').should == '"'
+        subject.whichquote('foo', nil, 'bar').should == ''
+        subject.whichquote('foo bar', nil, "'bar'").should == "'"
+      end
+
+      it "should double-quote special values when oldvalue is not quoted" do
+        subject.whichquote('foo bar', nil, 'bar').should == '"'
+      end
+
+      it "should use the :quoted parameter when present" do
+        resource = { }
+        resource.stubs(:parameters).returns([:quoted])
+
+        resource[:quoted] = :single
+        subject.whichquote('foo', resource).should == "'"
+
+        resource[:quoted] = :double
+        subject.whichquote('foo', resource).should == '"'
+
+        resource[:quoted] = :auto
+        subject.whichquote('foo', resource).should == ''
+        subject.whichquote('foo bar', resource).should == '"'
+      end
+    end
+
     describe "#quoteit" do
       it "should not do anything by default for alphanum values" do
         subject.quoteit('foo').should == 'foo'
