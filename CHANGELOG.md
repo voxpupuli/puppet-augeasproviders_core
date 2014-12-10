@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.1.1
+
+- Fix metadata.json
+
 ## 2.1.0
 
 - Add whichquote method
