@@ -313,7 +313,7 @@ Puppet::Type.type(:augeasprovider).provide(:default) do
       case type
       when :string
         if args[0]
-          aug.set(rpath, args[0])
+          aug.set(rpath, args[0].to_s)
         elsif rm_node
           aug.rm(rpath)
         else
