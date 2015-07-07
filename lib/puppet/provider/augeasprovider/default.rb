@@ -250,7 +250,7 @@ Puppet::Type.type(:augeasprovider).provide(:default) do
             else
               sp = "#{p}/#{sublabel}"
             end
-            aug.match(sp).map { |sp| aug.get(sp) }
+            aug.match(sp).map { |spp| aug.get(spp) }
           end
         end.flatten
       when :hash
