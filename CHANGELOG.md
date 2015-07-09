@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.1.2
+
+- Fix fixtures lib for RSpec 3
+- Avoid shadowing variable
+- Improve tags in README
+
 ## 2.1.1
 
 - Fix metadata.json
