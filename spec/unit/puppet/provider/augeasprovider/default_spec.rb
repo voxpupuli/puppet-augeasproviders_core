@@ -13,15 +13,15 @@ describe provider_class do
 
     describe "#lens" do
       it "should fail as default lens isn't set" do
-        subject.expects(:fail).with('Lens is not provided').raises
-        expect { subject.lens }.to raise_error
+        subject.expects(:fail).with('Lens is not provided').raises(RuntimeError)
+        expect { subject.lens }.to raise_error(RuntimeError)
       end
     end
 
     describe "#target" do
       it "should fail if no default or resource file" do
-        subject.expects(:fail).with('No target file given').raises
-        expect { subject.target }.to raise_error
+        subject.expects(:fail).with('No target file given').raises(RuntimeError)
+        expect { subject.target }.to raise_error(RuntimeError)
       end
 
       it "should return resource file if set" do
@@ -211,14 +211,14 @@ describe provider_class do
     describe "#attr_aug_reader" do
       it "should create a class method" do
         subject.attr_aug_reader(:foo, {})
-        subject.method_defined?('attr_aug_reader_foo').should be_true
+        subject.method_defined?('attr_aug_reader_foo').should be true
       end
     end
 
     describe "#attr_aug_writer" do
       it "should create a class method" do
         subject.attr_aug_writer(:foo, {})
-        subject.method_defined?('attr_aug_writer_foo').should be_true
+        subject.method_defined?('attr_aug_writer_foo').should be true
       end
     end
 
@@ -354,8 +354,8 @@ describe provider_class do
         let(:tmptarget) { aug_fixture("broken") }
 
         it "should fail if the file fails to load" do
-          subject.expects(:fail).with(regexp_matches(/Augeas didn't load #{Regexp.escape(thetarget)} with Hosts.lns: Iterated lens matched less than it should/)).raises
-          expect { subject.augopen(resource) {} }.to raise_error
+          subject.expects(:fail).with(regexp_matches(/Augeas didn't load #{Regexp.escape(thetarget)} with Hosts.lns: Iterated lens matched less than it should/)).raises(RuntimeError)
+          expect { subject.augopen(resource) {} }.to raise_error(RuntimeError)
         end
       end
     end
@@ -447,8 +447,8 @@ describe provider_class do
         let(:tmptarget) { aug_fixture("broken") }
 
         it "should fail if the file fails to load" do
-          subject.expects(:fail).with(regexp_matches(/Augeas didn't load #{Regexp.escape(thetarget)} with Hosts.lns: Iterated lens matched less than it should/)).raises
-          expect { subject.augopen!(resource) {} }.to raise_error
+          subject.expects(:fail).with(regexp_matches(/Augeas didn't load #{Regexp.escape(thetarget)} with Hosts.lns: Iterated lens matched less than it should/)).raises(RuntimeError)
+          expect { subject.augopen!(resource) {} }.to raise_error(RuntimeError)
         end
       end
 
@@ -523,7 +523,7 @@ describe provider_class do
     describe "#attr_aug_reader" do
       it "should create a class method using :string" do
         subject.attr_aug_reader(:foo, {})
-        subject.method_defined?('attr_aug_reader_foo').should be_true
+        subject.method_defined?('attr_aug_reader_foo').should be true
 
         Augeas.any_instance.expects(:get).with('$resource/foo').returns('bar')
         subject.augopen(resource) do |aug|
@@ -533,7 +533,7 @@ describe provider_class do
 
       it "should create a class method using :array and no sublabel" do
         subject.attr_aug_reader(:foo, { :type => :array })
-        subject.method_defined?('attr_aug_reader_foo').should be_true
+        subject.method_defined?('attr_aug_reader_foo').should be true
 
         rpath = "/files#{thetarget}/test/foo"
         subject.augopen(resource) do |aug|
@@ -546,7 +546,7 @@ describe provider_class do
 
       it "should create a class method using :array and a :seq sublabel" do
         subject.attr_aug_reader(:foo, { :type => :array, :sublabel => :seq })
-        subject.method_defined?('attr_aug_reader_foo').should be_true
+        subject.method_defined?('attr_aug_reader_foo').should be true
 
         rpath = "/files#{thetarget}/test/foo"
         subject.augopen(resource) do |aug|
@@ -562,7 +562,7 @@ describe provider_class do
 
       it "should create a class method using :array and a string sublabel" do
         subject.attr_aug_reader(:foo, { :type => :array, :sublabel => 'sl' })
-        subject.method_defined?('attr_aug_reader_foo').should be_true
+        subject.method_defined?('attr_aug_reader_foo').should be true
 
         rpath = "/files#{thetarget}/test/foo"
         subject.augopen(resource) do |aug|
@@ -584,7 +584,7 @@ describe provider_class do
 
       it "should create a class method using :hash and sublabel" do
         subject.attr_aug_reader(:foo, { :type => :hash, :sublabel => 'sl', :default => 'deflt' })
-        subject.method_defined?('attr_aug_reader_foo').should be_true
+        subject.method_defined?('attr_aug_reader_foo').should be true
 
         rpath = "/files#{thetarget}/test/foo"
         subject.augopen(resource) do |aug|
@@ -607,7 +607,7 @@ describe provider_class do
     describe "#attr_aug_writer" do
       it "should create a class method using :string" do
         subject.attr_aug_writer(:foo, {})
-        subject.method_defined?('attr_aug_writer_foo').should be_true
+        subject.method_defined?('attr_aug_writer_foo').should be true
 
         subject.augopen(resource) do |aug|
           aug.expects(:set).with('$resource/foo', 'bar')
@@ -619,7 +619,7 @@ describe provider_class do
 
       it "should create a class method using :string with :rm_node" do
         subject.attr_aug_writer(:foo, { :rm_node => true })
-        subject.method_defined?('attr_aug_writer_foo').should be_true
+        subject.method_defined?('attr_aug_writer_foo').should be true
 
         subject.augopen(resource) do |aug|
           aug.expects(:set).with('$resource/foo', 'bar')
@@ -631,7 +631,7 @@ describe provider_class do
 
       it "should create a class method using :array and no sublabel" do
         subject.attr_aug_writer(:foo, { :type => :array })
-        subject.method_defined?('attr_aug_writer_foo').should be_true
+        subject.method_defined?('attr_aug_writer_foo').should be true
 
         subject.augopen(resource) do |aug|
           aug.expects(:rm).with('$resource/foo')
@@ -645,7 +645,7 @@ describe provider_class do
 
       it "should create a class method using :array and a :seq sublabel" do
         subject.attr_aug_writer(:foo, { :type => :array, :sublabel => :seq })
-        subject.method_defined?('attr_aug_writer_foo').should be_true
+        subject.method_defined?('attr_aug_writer_foo').should be true
 
         subject.augopen(resource) do |aug|
           aug.expects(:rm).with('$resource/foo')
@@ -659,7 +659,7 @@ describe provider_class do
 
       it "should create a class method using :array and a string sublabel" do
         subject.attr_aug_writer(:foo, { :type => :array, :sublabel => 'sl' })
-        subject.method_defined?('attr_aug_writer_foo').should be_true
+        subject.method_defined?('attr_aug_writer_foo').should be true
 
         subject.augopen(resource) do |aug|
           aug.expects(:rm).with('$resource/foo')
@@ -679,7 +679,7 @@ describe provider_class do
 
       it "should create a class method using :hash and sublabel" do
         subject.attr_aug_writer(:foo, { :type => :hash, :sublabel => 'sl', :default => 'deflt' })
-        subject.method_defined?('attr_aug_writer_foo').should be_true
+        subject.method_defined?('attr_aug_writer_foo').should be true
 
         rpath = "/files#{thetarget}/test/foo"
         subject.augopen(resource) do |aug|
