@@ -10,10 +10,8 @@ unless RUBY_VERSION =~ /^1\.8/
   SimpleCov.formatter = Coveralls::SimpleCov::Formatter
 end
 SimpleCov.start do
-  add_group "AugeasProviders Libs", "/lib/augeasproviders/"
   add_group "Puppet Types", "/lib/puppet/type/"
   add_group "Puppet Providers", "/lib/puppet/provider/"
-  add_group "Augeas Spec Lib", "/spec/lib/"
 
   add_filter "/spec/fixtures/"
   add_filter "/spec/unit/"
