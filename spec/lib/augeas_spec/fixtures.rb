@@ -15,6 +15,7 @@ module AugeasSpec::Fixtures
   # Runs a particular resource via a catalog
   def apply(*resources)
     catalog = Puppet::Resource::Catalog.new
+    catalog.host_config = false
     resources.each do |resource|
       catalog.add_resource resource
     end
