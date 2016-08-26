@@ -22,7 +22,8 @@ gem 'ruby-augeas', rbaugversion
 group :development, :unit_tests do
   gem 'rake', ' < 11.0',                                   :require => false if RUBY_VERSION =~ /^1\.8/
   gem 'rspec', '< 3.2',                                    :require => false if RUBY_VERSION =~ /^1\.8/
-  gem 'json', '< 2.0',                                     :require => false if RUBY_VERSION =~ /^1\.8/
+  gem 'json', '< 2.0',                                     :require => false if RUBY_VERSION =~ /^1\.[89]/
+  gem 'json_pure', '< 2.0',                                :require => false if RUBY_VERSION =~ /^1\.[89]/
   gem 'rspec-puppet',                                      :require => false
   gem 'puppetlabs_spec_helper',                            :require => false
   gem 'metadata-json-lint',                                :require => false
