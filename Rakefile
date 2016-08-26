@@ -12,6 +12,11 @@ exclude_paths = [
 
 task :default => [:spec, :yard, :syntax, :lint]
 
+desc "Run acceptance tests"
+RSpec::Core::RakeTask.new(:acceptance) do |t|
+  t.pattern = 'spec/acceptance'
+end
+
 YARD::Rake::YardocTask.new do |t|
   t.options = []
 end
