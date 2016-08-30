@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.1.3
+- Test and list compatibility with Puppet 4 and latest OSes
+- Fix catalog building in spec helper under Puppet 4.6
+- Various fixes to test suite and gemset
+
 ## 2.1.2
 
 - Fix fixtures lib for RSpec 3
