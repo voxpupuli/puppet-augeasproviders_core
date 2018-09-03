@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.1.5
+
+- Allow puppetlabs/stdlib 5.x (GH #9)
+
 ## 2.1.4
 
 - Upped supported Puppet versions to include Puppet 5
