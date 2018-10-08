@@ -14,16 +14,20 @@ env:
   - PUPPET=4.0 RUBY_AUGEAS=0.5
   # Test Oldest Puppet, Inc. supported Puppet
   - PUPPET=4.7.1 RUBY_AUGEAS=0.5 FORGE_PUBLISH=true
-  # Test latest Puppet version
+  # Test latest Puppet 5
   - PUPPET=5.0 RUBY_AUGEAS=0.5
+  # Test latest Puppet
+  - PUPPET=6.0 RUBY_AUGEAS=0.5
 
 matrix:
   fast_finish: true
   exclude:
     # base exclude
-    # No support for Ruby 2.1.9 in Puppet 5
+    # No support for Ruby 2.1.9 in Puppet 5 & 6
     - rvm: 2.1.9
       env: PUPPET=5.0 RUBY_AUGEAS=0.5
+    - rvm: 2.1.9
+      env: PUPPET=6.0 RUBY_AUGEAS=0.5
 
 install:
   - "travis_retry ./.travis.sh"
