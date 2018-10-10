@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.2.0
+
+- Support Puppet 6 (GH #11)
+- Update metadata.json to reflect supported Ubuntu versions
+
 ## 2.1.5
 
 - Allow puppetlabs/stdlib 5.x (GH #9)
