@@ -551,7 +551,7 @@ Puppet::Type.type(:augeasprovider).provide(:default) do
   # @see #resource_path
   # @api public
   def self.setvars(aug, resource = nil)
-    aug.set('/augeas/context', "/files#{target(resource)}")
+    aug.context = "/files#{target(resource)}"
     aug.defnode('target', "/files#{target(resource)}", nil)
     aug.defvar('resource', resource_path(resource)) if resource
   end
@@ -922,7 +922,7 @@ Puppet::Type.type(:augeasprovider).provide(:default) do
   # can be overridden if necessary
   def exists?
     augopen do |aug|
-      not aug.match('$resource').empty?
+      aug.exists('$resource')
     end
   end
 
