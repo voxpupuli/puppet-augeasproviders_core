@@ -528,7 +528,6 @@ Puppet::Type.type(:augeasprovider).provide(:default) do
       @resource_path_block = block
     else
       if @resource_path_block
-        path = "/files#{target(resource)}"
         @resource_path_block.call(resource)
       else
         "#{target(resource)}/#{resource[:name]}"

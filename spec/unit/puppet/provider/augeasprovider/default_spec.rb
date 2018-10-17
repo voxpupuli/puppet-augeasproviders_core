@@ -42,7 +42,6 @@ describe provider_class do
 
       it "should call #target if a resource path block is set" do
         resource = { :name => 'foo' }
-        subject.expects(:target).with(resource)
         subject.resource_path { '/files/test' }
         subject.resource_path(resource).should == '/files/test'
       end
