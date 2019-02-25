@@ -5,7 +5,7 @@
   "summary": "Alternative Augeas-based providers for Puppet",
   "license": "Apache-2.0",
   "source": "https://github.com/hercules-team/augeasproviders_core",
-  "project_page": "http://augeasproviders.com",
+  "project_page": "https://github.com/hercules-team/augeasproviders_core",
   "issues_url": "https://github.com/hercules-team/augeasproviders_core/issues",
   "description": "This module provides alternative providers for core Puppet types using the Augeas configuration API library.",
   "dependencies": [
