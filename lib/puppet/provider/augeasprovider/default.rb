@@ -922,7 +922,7 @@ Puppet::Type.type(:augeasprovider).provide(:default) do
   # can be overridden if necessary
   def exists?
     augopen do |aug|
-      aug.exists('$resource')
+      not aug.match('$resource').empty?
     end
   end
 
