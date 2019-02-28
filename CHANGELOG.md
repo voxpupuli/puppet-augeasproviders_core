@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.2.1
+
+- Revert broken exists? implementation
+
 ## 2.2.0
 
 - Support Puppet 6 (GH #11)
