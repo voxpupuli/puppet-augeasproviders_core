@@ -326,7 +326,7 @@ Puppet::Type.type(:augeasprovider).provide(:default) do
           aug.clear(rpath)
         end
       when :array
-        if args[0].empty?
+        if args[0].nil? || args[0].empty?
           aug.rm(rpath)
         else
           if split_by
