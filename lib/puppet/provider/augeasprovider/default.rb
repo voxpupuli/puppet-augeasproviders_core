@@ -222,6 +222,8 @@ Puppet::Type.type(:augeasprovider).provide(:default) do
     default = opts[:default] || nil
     type = opts[:type] || :string
     sublabel = opts[:sublabel] || nil
+    rm_node = opts[:rm_node] || false
+    rm_value = opts[:rm_value] || nil
 
     rpath = label == :resource ? '$resource' : "$resource/#{label}"
 
@@ -239,7 +241,12 @@ Puppet::Type.type(:augeasprovider).provide(:default) do
     metaclass.send(:define_method, "attr_aug_reader_#{name}") do |aug, *args|
       case type
       when :string
-        aug.get(rpath)
+        val = aug.get(rpath)
+        if rm_node && val == rm_value
+          ''
+        else
+          val
+        end
       when :array
         aug.match(rpath).map do |p|
           if sublabel.nil?
