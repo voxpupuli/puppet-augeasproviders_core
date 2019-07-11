@@ -222,6 +222,8 @@ Puppet::Type.type(:augeasprovider).provide(:default) do
     default = opts[:default] || nil
     type = opts[:type] || :string
     sublabel = opts[:sublabel] || nil
+    rm_node = opts[:rm_node] || false
+    rm_value = opts[:rm_value] || nil
 
     rpath = label == :resource ? '$resource' : "$resource/#{label}"
 
@@ -239,7 +241,12 @@ Puppet::Type.type(:augeasprovider).provide(:default) do
     metaclass.send(:define_method, "attr_aug_reader_#{name}") do |aug, *args|
       case type
       when :string
-        aug.get(rpath)
+        val = aug.get(rpath)
+        if rm_node && val == rm_value
+          ''
+        else
+          val
+        end
       when :array
         aug.match(rpath).map do |p|
           if sublabel.nil?
@@ -294,6 +301,7 @@ Puppet::Type.type(:augeasprovider).provide(:default) do
     sublabel = opts[:sublabel] || nil
     purge_ident = opts[:purge_ident] || false
     rm_node = opts[:rm_node] || false
+    rm_value = opts[:rm_value] || nil
 
     rpath = label == :resource ? '$resource' : "$resource/#{label}"
 
@@ -312,7 +320,7 @@ Puppet::Type.type(:augeasprovider).provide(:default) do
       aug.rm("#{rpath}[position() != 1]") if purge_ident
       case type
       when :string
-        if args[0]
+        if args[0] != rm_value
           aug.set(rpath, args[0].to_s)
         elsif rm_node
           aug.rm(rpath)
