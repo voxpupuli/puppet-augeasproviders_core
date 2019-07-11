@@ -294,6 +294,7 @@ Puppet::Type.type(:augeasprovider).provide(:default) do
     sublabel = opts[:sublabel] || nil
     purge_ident = opts[:purge_ident] || false
     rm_node = opts[:rm_node] || false
+    rm_value = opts[:rm_value] || nil
 
     rpath = label == :resource ? '$resource' : "$resource/#{label}"
 
@@ -312,7 +313,7 @@ Puppet::Type.type(:augeasprovider).provide(:default) do
       aug.rm("#{rpath}[position() != 1]") if purge_ident
       case type
       when :string
-        if args[0]
+        if args[0] != rm_value
           aug.set(rpath, args[0].to_s)
         elsif rm_node
           aug.rm(rpath)
