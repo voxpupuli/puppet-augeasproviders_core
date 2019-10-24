@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.5.0
+
+- Support puppetlabs/stdlib 6 in metadata.json
+
 ## 2.4.0
 
 - Revert broken exists? implementation
