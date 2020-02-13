@@ -1,5 +1,5 @@
 language: ruby
-dist: precise
+dist: xenial
 sudo: required
 rvm:
   # Ruby with Puppet 5
