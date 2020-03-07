@@ -184,7 +184,8 @@ describe provider_class do
           Augeas.any_instance.expects(:respond_to?).with(:text_store).returns(true)
           Augeas.any_instance.expects(:set).with('/input', 'foo').returns(nil)
           Augeas.any_instance.expects(:text_store).with('Baz.lns', '/input', '/parsed').returns(true)
-          Augeas.any_instance.expects(:match).with('/parsed/bar').returns([])
+          Augeas.any_instance.expects(:set).with('/augeas/context', '/parsed').returns(nil)
+          Augeas.any_instance.expects(:match).with('bar').returns([])
           subject.parsed_as?('foo', 'bar', 'Baz.lns').should == false
         end
 
@@ -192,7 +193,8 @@ describe provider_class do
           Augeas.any_instance.expects(:respond_to?).with(:text_store).returns(true)
           Augeas.any_instance.expects(:set).with('/input', 'foo').returns(nil)
           Augeas.any_instance.expects(:text_store).with('Baz.lns', '/input', '/parsed').returns(true)
-          Augeas.any_instance.expects(:match).with('/parsed/bar').returns(['/parsed/bar'])
+          Augeas.any_instance.expects(:set).with('/augeas/context', '/parsed').returns(nil)
+          Augeas.any_instance.expects(:match).with('bar').returns(['/parsed/bar'])
           subject.parsed_as?('foo', 'bar', 'Baz.lns').should == true
         end
       end

@@ -595,19 +595,29 @@ Puppet::Type.type(:augeasprovider).provide(:default) do
     end
   end
 
-  # Returns whether text is parsed as path using lens
+  # Temporary manipulate strings with Augeas
   #
-  # @param [String] text the text to test
-  # @param [String] path the relative path to test
+  # This method wraps around text_store when possible
+  # and uses a temporary file otherwise.
+  #
+  # It automatically sets the Augeas context so you can
+  # manipulate paths relatively.
+  #
+  # @param [String] text the text to parse
   # @param [String] lens the lens to use for parsing
-  # @return [Boolean] whether the path was found when parsing text with lens
+  # @yield [aug, resource, *yield_params] block that uses the Augeas handle
+  # @yieldparam [Augeas] aug open Augeas handle
+  # @return [String] the result of the block calling, or false if text_store failed
   # @api public
-  def self.parsed_as?(text, path, lens)
+  def self.aug_temp(text, lens, &block)
     Augeas.open(nil, nil, Augeas::NO_MODL_AUTOLOAD) do |aug|
       if aug.respond_to? :text_store
         aug.set('/input', text)
         if aug.text_store(lens, '/input', '/parsed')
-          return aug.match("/parsed/#{path}").any?
+          aug.set('/augeas/context', "/parsed")
+          block.call(aug)
+        else
+          return false
         end
       else
         # ruby-augeas < 0.5 doesn't support text_store
@@ -621,11 +631,24 @@ Puppet::Type.type(:augeasprovider).provide(:default) do
             :excl => []
           )
           aug.load!
-          return aug.match("/files#{tmpfile.path.to_s}/#{path}").any?
+          aug.set('/augeas/context', "/files#{tmpfile.path.to_s}")
+          block.call(aug)
         end
       end
     end
-    return false
+  end
+
+  # Returns whether text is parsed as path using lens
+  #
+  # @param [String] text the text to test
+  # @param [String] path the relative path to test
+  # @param [String] lens the lens to use for parsing
+  # @return [Boolean] whether the path was found when parsing text with lens
+  # @api public
+  def self.parsed_as?(text, path, lens)
+    aug_temp(text, lens) do |aug|
+      aug.match(path).any?
+    end
   end
 
   # Sets the post_resource_eval class hook for Puppet
@@ -912,6 +935,24 @@ Puppet::Type.type(:augeasprovider).provide(:default) do
   # @api public
   def unquoteit(value)
     self.class.unquoteit(value)
+  end
+
+  # Temporary manipulate strings with Augeas
+  #
+  # This method wraps around text_store when possible
+  # and uses a temporary file otherwise.
+  #
+  # It automatically sets the Augeas context so you can
+  # manipulate paths relatively.
+  #
+  # @param [String] text the text to parse
+  # @param [String] lens the lens to use for parsing
+  # @yield [aug, resource, *yield_params] block that uses the Augeas handle
+  # @yieldparam [Augeas] aug open Augeas handle
+  # @return [String] the result of the block calling, or false if text_store failed
+  # @api public
+  def aug_temp(text, lens, &block)
+    self.class.aug_temp(text, lens, &block)
   end
 
   # Returns whether text is parsed as path using lens
