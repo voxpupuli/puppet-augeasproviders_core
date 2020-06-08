@@ -290,7 +290,7 @@ describe provider_class do
 
       it 'adds libdir/augeas/lenses/ to the loadpath if it exists' do
         plugindir = File.join(Puppet[:libdir], 'augeas', 'lenses')
-        File.expects(:exists?).with(plugindir).returns(true)
+        File.expects(:exist?).with(plugindir).returns(true)
         subject.send(:loadpath).should == plugindir
       end
     end
