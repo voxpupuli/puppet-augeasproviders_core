@@ -13,15 +13,13 @@ describe provider_class do
 
     describe '#lens' do
       it "fails as default lens isn't set" do
-        subject.expects(:fail).with('Lens is not provided').raises(RuntimeError)
-        expect { subject.lens }.to raise_error(RuntimeError)
+        expect { subject.lens }.to raise_error(Puppet::Error, 'Lens is not provided')
       end
     end
 
     describe '#target' do
       it 'fails if no default or resource file' do
-        subject.expects(:fail).with('No target file given').raises(RuntimeError)
-        expect { subject.target }.to raise_error(RuntimeError)
+        expect { subject.target }.to raise_error(Puppet::Error, 'No target file given')
       end
 
       it 'returns resource file if set' do
@@ -354,8 +352,7 @@ describe provider_class do
         let(:tmptarget) { aug_fixture('broken') }
 
         it 'fails if the file fails to load' do
-          subject.expects(:fail).with(regexp_matches(%r{Augeas didn't load #{Regexp.escape(thetarget)} with Hosts.lns: Iterated lens matched less than it should})).raises(RuntimeError)
-          expect { subject.augopen(resource) {} }.to raise_error(RuntimeError)
+          expect { subject.augopen(resource) {} }.to raise_error(Puppet::Error, %r{Augeas didn't load #{Regexp.escape(thetarget)} with Hosts.lns: Iterated lens matched less than it should})
         end
       end
     end
@@ -447,8 +444,7 @@ describe provider_class do
         let(:tmptarget) { aug_fixture('broken') }
 
         it 'fails if the file fails to load' do
-          subject.expects(:fail).with(regexp_matches(%r{Augeas didn't load #{Regexp.escape(thetarget)} with Hosts.lns: Iterated lens matched less than it should})).raises(RuntimeError)
-          expect { subject.augopen!(resource) {} }.to raise_error(RuntimeError)
+          expect { subject.augopen!(resource) {} }.to raise_error(Puppet::Error, %r{Augeas didn't load #{Regexp.escape(thetarget)} with Hosts.lns: Iterated lens matched less than it should})
         end
       end
 
