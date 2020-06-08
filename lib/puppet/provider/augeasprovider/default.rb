@@ -225,11 +225,11 @@ Puppet::Type.type(:augeasprovider).provide(:default) do
     rpath = (label == :resource) ? '$resource' : "$resource/#{label}"
 
     if type == :hash && sublabel.nil?
-      fail 'You must provide a sublabel for type hash'
+      raise(Puppet::Error, 'You must provide a sublabel for type hash')
     end
 
     unless [:string, :array, :hash].include? type
-      fail "Invalid type: #{type}"
+      raise(Puppet::Error, "Invalid type: #{type}")
     end
 
     # Class getter method using an existing aug handler
@@ -302,11 +302,11 @@ Puppet::Type.type(:augeasprovider).provide(:default) do
     rpath = (label == :resource) ? '$resource' : "$resource/#{label}"
 
     if type == :hash and sublabel.nil?
-      fail "You must provide a sublabel for type hash"
+      raise(Puppet::Error, "You must provide a sublabel for type hash")
     end
 
     unless [:string, :array, :hash].include? type
-      fail "Invalid type: #{type}"
+      raise(Puppet::Error, "Invalid type: #{type}")
     end
 
     # Class setter method using an existing aug handler
@@ -424,7 +424,7 @@ Puppet::Type.type(:augeasprovider).provide(:default) do
     if block_given?
       @lens_block = block
     else
-      fail 'Lens is not provided' unless @lens_block
+      raise(Puppet::Error, 'Lens is not provided') unless @lens_block
       @lens_block.call(resource)
     end
   end
@@ -576,7 +576,7 @@ Puppet::Type.type(:augeasprovider).provide(:default) do
   def self.target(resource = nil)
     file = @default_file_block.call if @default_file_block
     file = resource[:target] if resource && resource[:target]
-    fail 'No target file given' if file.nil?
+    raise(Puppet::Error, 'No target file given') if file.nil?
     file.chomp('/')
   end
 
@@ -698,7 +698,7 @@ Puppet::Type.type(:augeasprovider).provide(:default) do
           message += " (line:#{line}, character:#{char})"
         end
         from = loadpath.nil? ? '' : " from #{loadpath}"
-        fail("Augeas didn't load #{file} with #{lens}#{from}: #{message}")
+        raise(Puppet::Error, "Augeas didn't load #{file} with #{lens}#{from}: #{message}")
       end
 
       if block_given?
