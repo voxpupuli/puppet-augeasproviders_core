@@ -5,75 +5,75 @@ require 'spec_helper'
 provider_class = Puppet::Type.type(:augeasprovider).provider(:default)
 
 describe provider_class do
-  context "empty provider" do
+  context 'empty provider' do
     class Empty < provider_class
     end
 
     subject { Empty }
 
-    describe "#lens" do
-      it "should fail as default lens isn't set" do
+    describe '#lens' do
+      it "fails as default lens isn't set" do
         subject.expects(:fail).with('Lens is not provided').raises(RuntimeError)
         expect { subject.lens }.to raise_error(RuntimeError)
       end
     end
 
-    describe "#target" do
-      it "should fail if no default or resource file" do
+    describe '#target' do
+      it 'fails if no default or resource file' do
         subject.expects(:fail).with('No target file given').raises(RuntimeError)
         expect { subject.target }.to raise_error(RuntimeError)
       end
 
-      it "should return resource file if set" do
-        subject.target(:target => '/foo').should == '/foo'
+      it 'returns resource file if set' do
+        subject.target(target: '/foo').should == '/foo'
       end
 
-      it "should strip trailing / from resource file" do
-        subject.target(:target => '/foo/').should == '/foo'
+      it 'strips trailing / from resource file' do
+        subject.target(target: '/foo/').should == '/foo'
       end
     end
 
-    describe "#resource_path" do
-      it "should call #target if no resource path block set" do
-        resource = { :name => 'foo' }
+    describe '#resource_path' do
+      it 'calls #target if no resource path block set' do
+        resource = { name: 'foo' }
         subject.expects(:target).with(resource)
         subject.resource_path(resource).should == '/foo'
       end
 
-      it "should call #target if a resource path block is set" do
-        resource = { :name => 'foo' }
+      it 'calls #target if a resource path block is set' do
+        resource = { name: 'foo' }
         subject.resource_path { '/files/test' }
         subject.resource_path(resource).should == '/files/test'
       end
     end
 
-    describe "#readquote" do
-      it "should return :double when value is double-quoted" do
+    describe '#readquote' do
+      it 'returns :double when value is double-quoted' do
         subject.readquote('"foo"').should == :double
       end
 
-      it "should return :single when value is single-quoted" do
+      it 'returns :single when value is single-quoted' do
         subject.readquote("'foo'").should == :single
       end
 
-      it "should return nil when value is not quoted" do
-        subject.readquote("foo").should be_nil
+      it 'returns nil when value is not quoted' do
+        subject.readquote('foo').should be_nil
       end
 
-      it "should return nil when value is not properly quoted" do
+      it 'returns nil when value is not properly quoted' do
         subject.readquote("'foo").should be_nil
         subject.readquote("'foo\"").should be_nil
-        subject.readquote("\"foo").should be_nil
+        subject.readquote('"foo').should be_nil
         subject.readquote("\"foo'").should be_nil
       end
     end
 
-    describe "#whichquote" do
-      it "return an empty string for alphanum values" do
+    describe '#whichquote' do
+      it 'return an empty string for alphanum values' do
         subject.whichquote('foo').should == ''
       end
 
-      it "should double-quote by default for values containing spaces or special characters" do
+      it 'double-quotes by default for values containing spaces or special characters' do
         subject.whichquote('foo bar').should == '"'
         subject.whichquote('foo&bar').should == '"'
         subject.whichquote('foo;bar').should == '"'
@@ -84,19 +84,19 @@ describe provider_class do
         subject.whichquote('foo|bar').should == '"'
       end
 
-      it "should call #readquote and use its value when oldvalue is passed" do
+      it 'calls #readquote and use its value when oldvalue is passed' do
         subject.whichquote('foo', nil, "'bar'").should == "'"
         subject.whichquote('foo', nil, '"bar"').should == '"'
         subject.whichquote('foo', nil, 'bar').should == ''
         subject.whichquote('foo bar', nil, "'bar'").should == "'"
       end
 
-      it "should double-quote special values when oldvalue is not quoted" do
+      it 'double-quotes special values when oldvalue is not quoted' do
         subject.whichquote('foo bar', nil, 'bar').should == '"'
       end
 
-      it "should use the :quoted parameter when present" do
-        resource = { }
+      it 'uses the :quoted parameter when present' do
+        resource = {}
         resource.stubs(:parameters).returns([:quoted])
 
         resource[:quoted] = :single
@@ -111,12 +111,12 @@ describe provider_class do
       end
     end
 
-    describe "#quoteit" do
-      it "should not do anything by default for alphanum values" do
+    describe '#quoteit' do
+      it 'does not do anything by default for alphanum values' do
         subject.quoteit('foo').should == 'foo'
       end
 
-      it "should double-quote by default for values containing spaces or special characters" do
+      it 'double-quotes by default for values containing spaces or special characters' do
         subject.quoteit('foo bar').should == '"foo bar"'
         subject.quoteit('foo&bar').should == '"foo&bar"'
         subject.quoteit('foo;bar').should == '"foo;bar"'
@@ -127,19 +127,19 @@ describe provider_class do
         subject.quoteit('foo|bar').should == '"foo|bar"'
       end
 
-      it "should call #readquote and use its value when oldvalue is passed" do
+      it 'calls #readquote and use its value when oldvalue is passed' do
         subject.quoteit('foo', nil, "'bar'").should == "'foo'"
         subject.quoteit('foo', nil, '"bar"').should == '"foo"'
         subject.quoteit('foo', nil, 'bar').should == 'foo'
         subject.quoteit('foo bar', nil, "'bar'").should == "'foo bar'"
       end
 
-      it "should double-quote special values when oldvalue is not quoted" do
+      it 'double-quotes special values when oldvalue is not quoted' do
         subject.quoteit('foo bar', nil, 'bar').should == '"foo bar"'
       end
 
-      it "should use the :quoted parameter when present" do
-        resource = { }
+      it 'uses the :quoted parameter when present' do
+        resource = {}
         resource.stubs(:parameters).returns([:quoted])
 
         resource[:quoted] = :single
@@ -154,33 +154,33 @@ describe provider_class do
       end
     end
 
-    describe "#unquoteit" do
-      it "should not do anything when value is not quoted" do
+    describe '#unquoteit' do
+      it 'does not do anything when value is not quoted' do
         subject.unquoteit('foo bar').should == 'foo bar'
       end
 
-      it "should not do anything when value is badly quoted" do
+      it 'does not do anything when value is badly quoted' do
         subject.unquoteit('"foo bar').should == '"foo bar'
         subject.unquoteit("'foo bar").should == "'foo bar"
         subject.unquoteit("'foo bar\"").should == "'foo bar\""
       end
 
-      it "should return unquoted value" do
+      it 'returns unquoted value' do
         subject.unquoteit('"foo bar"').should == 'foo bar'
         subject.unquoteit("'foo bar'").should == 'foo bar'
       end
     end
 
-    describe "#parsed_as?" do
-      context "when text_store is supported" do
-        it "should return false when text_store fails" do
+    describe '#parsed_as?' do
+      context 'when text_store is supported' do
+        it 'returns false when text_store fails' do
           Augeas.any_instance.expects(:respond_to?).with(:text_store).returns(true)
           Augeas.any_instance.expects(:set).with('/input', 'foo').returns(nil)
           Augeas.any_instance.expects(:text_store).with('Baz.lns', '/input', '/parsed').returns(false)
           subject.parsed_as?('foo', 'bar', 'Baz.lns').should == false
         end
 
-        it "should return false when path is not found" do
+        it 'returns false when path is not found' do
           Augeas.any_instance.expects(:respond_to?).with(:text_store).returns(true)
           Augeas.any_instance.expects(:set).with('/input', 'foo').returns(nil)
           Augeas.any_instance.expects(:text_store).with('Baz.lns', '/input', '/parsed').returns(true)
@@ -188,7 +188,7 @@ describe provider_class do
           subject.parsed_as?('foo', 'bar', 'Baz.lns').should == false
         end
 
-        it "should return true when path is found" do
+        it 'returns true when path is found' do
           Augeas.any_instance.expects(:respond_to?).with(:text_store).returns(true)
           Augeas.any_instance.expects(:set).with('/input', 'foo').returns(nil)
           Augeas.any_instance.expects(:text_store).with('Baz.lns', '/input', '/parsed').returns(true)
@@ -197,8 +197,8 @@ describe provider_class do
         end
       end
 
-      context "when text_store is not supported" do
-        it "should return true if path is found in tempfile" do
+      context 'when text_store is not supported' do
+        it 'returns true if path is found in tempfile' do
           Augeas.any_instance.expects(:respond_to?).with(:text_store).returns(false)
           Augeas.any_instance.expects(:text_store).never
           Augeas.any_instance.expects(:match).returns(['/files/tmp/aug_text_store20140410-8734-icc4xn/bar'])
@@ -207,131 +207,132 @@ describe provider_class do
       end
     end
 
-    describe "#attr_aug_reader" do
-      it "should create a class method" do
+    describe '#attr_aug_reader' do
+      it 'creates a class method' do
         subject.attr_aug_reader(:foo, {})
         subject.method_defined?('attr_aug_reader_foo').should be true
       end
     end
 
-    describe "#attr_aug_writer" do
-      it "should create a class method" do
+    describe '#attr_aug_writer' do
+      it 'creates a class method' do
         subject.attr_aug_writer(:foo, {})
         subject.method_defined?('attr_aug_writer_foo').should be true
       end
     end
 
-    describe "#attr_aug_accessor" do
-      it "should call #attr_aug_reader and #attr_aug_writer" do
+    describe '#attr_aug_accessor' do
+      it 'calls #attr_aug_reader and #attr_aug_writer' do
         name = :foo
-        opts = { :bar => 'baz' }
+        opts = { bar: 'baz' }
         subject.expects(:attr_aug_reader).with(name, opts)
         subject.expects(:attr_aug_writer).with(name, opts)
         subject.attr_aug_accessor(name, opts)
       end
     end
 
-    describe "#next_seq" do
-      it "should return 1 with no paths" do
+    describe '#next_seq' do
+      it 'returns 1 with no paths' do
         subject.new.next_seq([]).should == '1'
       end
 
-      it "should return 1 with only comments" do
+      it 'returns 1 with only comments' do
         subject.new.next_seq(['/files/etc/hosts/#comment[1]']).should == '1'
       end
 
-      it "should return 2 when 1 exists" do
+      it 'returns 2 when 1 exists' do
         subject.new.next_seq(['/files/etc/hosts/1']).should == '2'
       end
 
-      it "should return 42 when 1..41 exists" do
-        subject.new.next_seq((1..41).map {|n| "/files/etc/hosts/#{n}"}).should == '42'
+      it 'returns 42 when 1..41 exists' do
+        subject.new.next_seq((1..41).map { |n| "/files/etc/hosts/#{n}" }).should == '42'
       end
     end
   end
 
-  context "working provider" do
+  context 'working provider' do
     class Test < provider_class
       lens { 'Hosts.lns' }
       default_file { '/foo' }
-      resource_path { |r, p| r[:test] }
+      resource_path { |r, _p| r[:test] }
       attr_accessor :resource
     end
 
     subject { Test }
-    let(:tmptarget) { aug_fixture("full") }
+
+    let(:tmptarget) { aug_fixture('full') }
     let(:thetarget) { tmptarget.path }
-    let(:resource) { {:target => thetarget} }
+    let(:resource) { { target: thetarget } }
 
     # Class methods
-    describe "#lens" do
-      it "should allow retrieval of the set lens" do
+    describe '#lens' do
+      it 'allows retrieval of the set lens' do
         subject.lens.should == 'Hosts.lns'
       end
     end
 
-    describe "#target" do
-      it "should allow retrieval of the set default file" do
+    describe '#target' do
+      it 'allows retrieval of the set default file' do
         subject.target.should == '/foo'
       end
     end
 
-    describe "#resource_path" do
-      it "should call block to get the resource path" do
-        subject.resource_path(:test => 'bar').should == 'bar'
+    describe '#resource_path' do
+      it 'calls block to get the resource path' do
+        subject.resource_path(test: 'bar').should == 'bar'
       end
     end
 
-    describe "#loadpath" do
-      it "should return nil by default" do
+    describe '#loadpath' do
+      it 'returns nil by default' do
         subject.send(:loadpath).should be_nil
       end
 
-      it "should add libdir/augeas/lenses/ to the loadpath if it exists" do
+      it 'adds libdir/augeas/lenses/ to the loadpath if it exists' do
         plugindir = File.join(Puppet[:libdir], 'augeas', 'lenses')
         File.expects(:exists?).with(plugindir).returns(true)
         subject.send(:loadpath).should == plugindir
       end
     end
 
-    describe "#augopen" do
-      before do
+    describe '#augopen' do
+      before(:each) do
         subject.expects(:augsave!).never
       end
 
-      context "on Puppet < 3.4.0" do
+      context 'on Puppet < 3.4.0' do
         before :each do
           subject.stubs(:supported?).with(:post_resource_eval).returns(false)
         end
 
-        it "should call Augeas#close when given a block" do
+        it 'calls Augeas#close when given a block' do
           subject.augopen(resource) do |aug|
             aug.expects(:close)
           end
         end
 
-        it "should not call Augeas#close when not given a block" do
+        it 'does not call Augeas#close when not given a block' do
           Augeas.any_instance.expects(:close).never
           aug = subject.augopen(resource)
         end
       end
 
-      context "on Puppet >= 3.4.0" do
+      context 'on Puppet >= 3.4.0' do
         before :each do
           subject.stubs(:supported?).with(:post_resource_eval).returns(true)
         end
 
-        it "should not call Augeas#close when given a block" do
+        it 'does not call Augeas#close when given a block' do
           Augeas.any_instance.expects(:close).never
           aug = subject.augopen(resource)
         end
 
-        it "should not call Augeas#close when not given a block" do
+        it 'does not call Augeas#close when not given a block' do
           Augeas.any_instance.expects(:close).never
           aug = subject.augopen(resource)
         end
 
-        it "should call Augeas#close when calling post_resource_eval" do
+        it 'calls Augeas#close when calling post_resource_eval' do
           subject.augopen(resource) do |aug|
             aug.expects(:close)
             subject.post_resource_eval
@@ -339,102 +340,102 @@ describe provider_class do
         end
       end
 
-      it "should call #setvars when given a block" do
+      it 'calls #setvars when given a block' do
         subject.expects(:setvars)
         subject.augopen(resource) { |aug| }
       end
 
-      it "should not call #setvars when not given a block" do
+      it 'does not call #setvars when not given a block' do
         subject.expects(:setvars).never
         aug = subject.augopen(resource)
       end
 
-      context "with broken file" do
-        let(:tmptarget) { aug_fixture("broken") }
+      context 'with broken file' do
+        let(:tmptarget) { aug_fixture('broken') }
 
-        it "should fail if the file fails to load" do
-          subject.expects(:fail).with(regexp_matches(/Augeas didn't load #{Regexp.escape(thetarget)} with Hosts.lns: Iterated lens matched less than it should/)).raises(RuntimeError)
+        it 'fails if the file fails to load' do
+          subject.expects(:fail).with(regexp_matches(%r{Augeas didn't load #{Regexp.escape(thetarget)} with Hosts.lns: Iterated lens matched less than it should})).raises(RuntimeError)
           expect { subject.augopen(resource) {} }.to raise_error(RuntimeError)
         end
       end
     end
 
-    describe "#augopen!" do
-      context "on Puppet < 3.4.0" do
+    describe '#augopen!' do
+      context 'on Puppet < 3.4.0' do
         before :each do
           subject.stubs(:supported?).with(:post_resource_eval).returns(false)
         end
 
-        it "should call Augeas#close when given a block" do
+        it 'calls Augeas#close when given a block' do
           subject.augopen!(resource) do |aug|
             aug.expects(:close)
           end
         end
 
-        it "should not call Augeas#close when not given a block" do
+        it 'does not call Augeas#close when not given a block' do
           Augeas.any_instance.expects(:close).never
           aug = subject.augopen!(resource)
         end
       end
 
-      context "on Puppet >= 3.4.0" do
+      context 'on Puppet >= 3.4.0' do
         before :each do
           subject.stubs(:supported?).with(:post_resource_eval).returns(true)
         end
 
-        it "should not call Augeas#close when given a block" do
+        it 'does not call Augeas#close when given a block' do
           Augeas.any_instance.expects(:close).never
           aug = subject.augopen!(resource)
         end
 
-        it "should not call Augeas#close when not given a block" do
+        it 'does not call Augeas#close when not given a block' do
           Augeas.any_instance.expects(:close).never
           aug = subject.augopen!(resource)
         end
       end
 
-      it "should call #setvars when given a block" do
+      it 'calls #setvars when given a block' do
         subject.expects(:setvars)
         subject.augopen!(resource) { |aug| }
       end
 
-      it "should not call #setvars when not given a block" do
+      it 'does not call #setvars when not given a block' do
         subject.expects(:setvars).never
         aug = subject.augopen!(resource)
       end
 
-      context "on Puppet < 3.4.0" do
+      context 'on Puppet < 3.4.0' do
         before :each do
           subject.stubs(:supported?).with(:post_resource_eval).returns(false)
         end
 
-        it "should call #augsave when given a block" do
+        it 'calls #augsave when given a block' do
           subject.expects(:augsave!)
           subject.augopen!(resource) { |aug| }
         end
 
-        it "should not call #augsave when not given a block" do
+        it 'does not call #augsave when not given a block' do
           subject.expects(:augsave!).never
           aug = subject.augopen!(resource)
         end
       end
 
-      context "on Puppet >= 3.4.0" do
+      context 'on Puppet >= 3.4.0' do
         before :each do
           subject.stubs(:supported?).with(:post_resource_eval).returns(true)
         end
 
-        it "should not call #augsave when given a block" do
+        it 'does not call #augsave when given a block' do
           subject.expects(:augsave!).never
           subject.augopen!(resource) { |aug| }
         end
 
-        it "should not call #augsave when not given a block" do
+        it 'does not call #augsave when not given a block' do
           subject.expects(:augsave!).never
           aug = subject.augopen!(resource)
         end
 
-        it "should call Augeas#close when calling post_resource_eval" do
+        it 'calls Augeas#close when calling post_resource_eval' do
           subject.augopen(resource) do |aug|
             aug.expects(:close)
             subject.post_resource_eval
@@ -442,39 +443,39 @@ describe provider_class do
         end
       end
 
-      context "with broken file" do
-        let(:tmptarget) { aug_fixture("broken") }
+      context 'with broken file' do
+        let(:tmptarget) { aug_fixture('broken') }
 
-        it "should fail if the file fails to load" do
-          subject.expects(:fail).with(regexp_matches(/Augeas didn't load #{Regexp.escape(thetarget)} with Hosts.lns: Iterated lens matched less than it should/)).raises(RuntimeError)
+        it 'fails if the file fails to load' do
+          subject.expects(:fail).with(regexp_matches(%r{Augeas didn't load #{Regexp.escape(thetarget)} with Hosts.lns: Iterated lens matched less than it should})).raises(RuntimeError)
           expect { subject.augopen!(resource) {} }.to raise_error(RuntimeError)
         end
       end
 
-      context "when raising an exception in the block" do
-        it "should to raise the right exception" do
+      context 'when raising an exception in the block' do
+        it 'toes raise the right exception' do
           expect {
-            subject.augopen! do |aug|
-              raise Puppet::Error, "My error"
+            subject.augopen! do |_aug|
+              raise Puppet::Error, 'My error'
             end
-          }.to raise_error Puppet::Error, "My error"
+          }.to raise_error Puppet::Error, 'My error'
         end
       end
     end
 
-    describe "#augsave" do
-      it "should print /augeas//error on save" do
+    describe '#augsave' do
+      it 'prints /augeas//error on save' do
         subject.augopen(resource) do |aug|
           # Prepare an invalid save
           subject.stubs(:debug)
           aug.rm("/files#{thetarget}/*/ipaddr").should_not == 0
-          lambda { subject.augsave!(aug) }.should raise_error Augeas::Error, /Failed to save Augeas tree/
+          -> { subject.augsave!(aug) }.should raise_error Augeas::Error, %r{Failed to save Augeas tree}
         end
       end
     end
 
-    describe "#path_label" do
-      it "should use Augeas#label when available" do
+    describe '#path_label' do
+      it 'uses Augeas#label when available' do
         subject.augopen(resource) do |aug|
           aug.expects(:respond_to?).with(:label).returns true
           aug.expects(:label).with('/files/foo[2]').returns 'foo'
@@ -482,7 +483,7 @@ describe provider_class do
         end
       end
 
-      it "should emulate Augeas#label when it is not available" do
+      it 'emulates Augeas#label when it is not available' do
         subject.augopen(resource) do |aug|
           aug.expects(:respond_to?).with(:label).returns false
           aug.expects(:label).with('/files/bar[4]').never
@@ -490,7 +491,7 @@ describe provider_class do
         end
       end
 
-      it "should emulate Augeas#label when no label is found in the tree" do
+      it 'emulates Augeas#label when no label is found in the tree' do
         subject.augopen(resource) do |aug|
           aug.expects(:respond_to?).with(:label).returns true
           aug.expects(:label).with('/files/baz[15]').returns nil
@@ -499,8 +500,8 @@ describe provider_class do
       end
     end
 
-    describe "#setvars" do
-      it "should call Augeas#defnode to set $target, Augeas#defvar to set $resource and Augeas#set to set /augeas/context when resource is passed" do
+    describe '#setvars' do
+      it 'calls Augeas#defnode to set $target, Augeas#defvar to set $resource and Augeas#set to set /augeas/context when resource is passed' do
         subject.augopen(resource) do |aug|
           aug.expects(:context=).with("/files#{thetarget}")
           aug.expects(:defnode).with('target', "/files#{thetarget}", nil)
@@ -510,7 +511,7 @@ describe provider_class do
         end
       end
 
-      it "should call Augeas#defnode to set $target but not $resource when no resource is passed" do
+      it 'calls Augeas#defnode to set $target but not $resource when no resource is passed' do
         subject.augopen(resource) do |aug|
           aug.expects(:defnode).with('target', '/files/foo', nil)
           aug.expects(:defvar).never
@@ -519,8 +520,8 @@ describe provider_class do
       end
     end
 
-    describe "#attr_aug_reader" do
-      it "should create a class method using :string" do
+    describe '#attr_aug_reader' do
+      it 'creates a class method using :string' do
         subject.attr_aug_reader(:foo, {})
         subject.method_defined?('attr_aug_reader_foo').should be true
 
@@ -530,8 +531,8 @@ describe provider_class do
         end
       end
 
-      it "should create a class method using :array with :split_by" do
-        subject.attr_aug_reader(:foo, { :type => :array, :split_by => ',' })
+      it 'creates a class method using :array with :split_by' do
+        subject.attr_aug_reader(:foo, type: :array, split_by: ',')
         subject.method_defined?('attr_aug_reader_foo').should be true
 
         subject.augopen(resource) do |aug|
@@ -540,8 +541,8 @@ describe provider_class do
         end
       end
 
-      it "should create a class method using :array and no sublabel" do
-        subject.attr_aug_reader(:foo, { :type => :array })
+      it 'creates a class method using :array and no sublabel' do
+        subject.attr_aug_reader(:foo, type: :array)
         subject.method_defined?('attr_aug_reader_foo').should be true
 
         rpath = "/files#{thetarget}/test/foo"
@@ -553,8 +554,8 @@ describe provider_class do
         end
       end
 
-      it "should create a class method using :array and a :seq sublabel" do
-        subject.attr_aug_reader(:foo, { :type => :array, :sublabel => :seq })
+      it 'creates a class method using :array and a :seq sublabel' do
+        subject.attr_aug_reader(:foo, type: :array, sublabel: :seq)
         subject.method_defined?('attr_aug_reader_foo').should be true
 
         rpath = "/files#{thetarget}/test/foo"
@@ -569,8 +570,8 @@ describe provider_class do
         end
       end
 
-      it "should create a class method using :array and a string sublabel" do
-        subject.attr_aug_reader(:foo, { :type => :array, :sublabel => 'sl' })
+      it 'creates a class method using :array and a string sublabel' do
+        subject.attr_aug_reader(:foo, type: :array, sublabel: 'sl')
         subject.method_defined?('attr_aug_reader_foo').should be true
 
         rpath = "/files#{thetarget}/test/foo"
@@ -585,14 +586,14 @@ describe provider_class do
         end
       end
 
-      it "should create a class method using :hash and no sublabel" do
+      it 'creates a class method using :hash and no sublabel' do
         expect {
-          subject.attr_aug_reader(:foo, { :type => :hash, :default => 'deflt' })
-        }.to raise_error(RuntimeError, /You must provide a sublabel/)
+          subject.attr_aug_reader(:foo, type: :hash, default: 'deflt')
+        }.to raise_error(RuntimeError, %r{You must provide a sublabel})
       end
 
-      it "should create a class method using :hash and sublabel" do
-        subject.attr_aug_reader(:foo, { :type => :hash, :sublabel => 'sl', :default => 'deflt' })
+      it 'creates a class method using :hash and sublabel' do
+        subject.attr_aug_reader(:foo, type: :hash, sublabel: 'sl', default: 'deflt')
         subject.method_defined?('attr_aug_reader_foo').should be true
 
         rpath = "/files#{thetarget}/test/foo"
@@ -606,15 +607,15 @@ describe provider_class do
         end
       end
 
-      it "should create a class method using wrong type" do
+      it 'creates a class method using wrong type' do
         expect {
-          subject.attr_aug_reader(:foo, { :type => :foo })
-        }.to raise_error(RuntimeError, /Invalid type: foo/)
+          subject.attr_aug_reader(:foo, type: :foo)
+        }.to raise_error(RuntimeError, %r{Invalid type: foo})
       end
     end
 
-    describe "#attr_aug_writer" do
-      it "should create a class method using :string" do
+    describe '#attr_aug_writer' do
+      it 'creates a class method using :string' do
         subject.attr_aug_writer(:foo, {})
         subject.method_defined?('attr_aug_writer_foo').should be true
 
@@ -626,8 +627,8 @@ describe provider_class do
         end
       end
 
-      it "should create a class method using :string with :rm_node" do
-        subject.attr_aug_writer(:foo, { :rm_node => true })
+      it 'creates a class method using :string with :rm_node' do
+        subject.attr_aug_writer(:foo, rm_node: true)
         subject.method_defined?('attr_aug_writer_foo').should be true
 
         subject.augopen(resource) do |aug|
@@ -638,8 +639,8 @@ describe provider_class do
         end
       end
 
-      it "should create a class method using :array with :split_by" do
-        subject.attr_aug_writer(:foo, { :type => :array, :split_by => ',' })
+      it 'creates a class method using :array with :split_by' do
+        subject.attr_aug_writer(:foo, type: :array, split_by: ',')
         subject.method_defined?('attr_aug_writer_foo').should be true
 
         subject.augopen(resource) do |aug|
@@ -657,8 +658,8 @@ describe provider_class do
         end
       end
 
-      it "should create a class method using :array and no sublabel" do
-        subject.attr_aug_writer(:foo, { :type => :array })
+      it 'creates a class method using :array and no sublabel' do
+        subject.attr_aug_writer(:foo, type: :array)
         subject.method_defined?('attr_aug_writer_foo').should be true
 
         subject.augopen(resource) do |aug|
@@ -671,8 +672,8 @@ describe provider_class do
         end
       end
 
-      it "should create a class method using :array and a :seq sublabel" do
-        subject.attr_aug_writer(:foo, { :type => :array, :sublabel => :seq })
+      it 'creates a class method using :array and a :seq sublabel' do
+        subject.attr_aug_writer(:foo, type: :array, sublabel: :seq)
         subject.method_defined?('attr_aug_writer_foo').should be true
 
         subject.augopen(resource) do |aug|
@@ -685,8 +686,8 @@ describe provider_class do
         end
       end
 
-      it "should create a class method using :array and a string sublabel" do
-        subject.attr_aug_writer(:foo, { :type => :array, :sublabel => 'sl' })
+      it 'creates a class method using :array and a string sublabel' do
+        subject.attr_aug_writer(:foo, type: :array, sublabel: 'sl')
         subject.method_defined?('attr_aug_writer_foo').should be true
 
         subject.augopen(resource) do |aug|
@@ -699,14 +700,14 @@ describe provider_class do
         end
       end
 
-      it "should create a class method using :hash and no sublabel" do
+      it 'creates a class method using :hash and no sublabel' do
         expect {
-          subject.attr_aug_writer(:foo, { :type => :hash, :default => 'deflt' })
-        }.to raise_error(RuntimeError, /You must provide a sublabel/)
+          subject.attr_aug_writer(:foo, type: :hash, default: 'deflt')
+        }.to raise_error(RuntimeError, %r{You must provide a sublabel})
       end
 
-      it "should create a class method using :hash and sublabel" do
-        subject.attr_aug_writer(:foo, { :type => :hash, :sublabel => 'sl', :default => 'deflt' })
+      it 'creates a class method using :hash and sublabel' do
+        subject.attr_aug_writer(:foo, type: :hash, sublabel: 'sl', default: 'deflt')
         subject.method_defined?('attr_aug_writer_foo').should be true
 
         rpath = "/files#{thetarget}/test/foo"
@@ -716,14 +717,14 @@ describe provider_class do
           aug.expects(:set).with("$resource/foo[.='baz']/sl", 'bazval')
           aug.expects(:set).with("$resource/foo[.='bazz']", 'bazz')
           aug.expects(:set).with("$resource/foo[.='bazz']/sl", 'bazzval').never
-          subject.attr_aug_writer_foo(aug, { 'baz' => 'bazval', 'bazz' => 'deflt' })
+          subject.attr_aug_writer_foo(aug, 'baz' => 'bazval', 'bazz' => 'deflt')
         end
       end
 
-      it "should create a class method using wrong type" do
+      it 'creates a class method using wrong type' do
         expect {
-          subject.attr_aug_writer(:foo, { :type => :foo })
-        }.to raise_error(RuntimeError, /Invalid type: foo/)
+          subject.attr_aug_writer(:foo, type: :foo)
+        }.to raise_error(RuntimeError, %r{Invalid type: foo})
       end
     end
   end
