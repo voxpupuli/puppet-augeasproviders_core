@@ -29,7 +29,7 @@ module AugeasSpec::Fixtures
     # Check for warning+ log messages
     loglevels = Puppet::Util::Log.levels[3, 999]
     firstlogs = @logs.dup
-    @logs.select { |log| loglevels.include?(log.level) && log.message !~ %r{'modulepath' as a setting} }.should == []
+    @logs.select { |log| loglevels.include?(log.level) && log.message !~ %r{'modulepath' as a setting} }.should be_empty
 
     # Check for transaction success after, as it's less informative
     txn.any_failed?.should_not eq(true)

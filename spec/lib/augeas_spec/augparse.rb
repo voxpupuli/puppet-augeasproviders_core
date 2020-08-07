@@ -12,7 +12,7 @@ module AugeasSpec::Augparse
         File.open(file, 'r') do |ffile|
           line = ffile.readline
           finput.write line unless line == "\n"
-          ffile.each { |line| finput.write line }
+          ffile.each { |l| finput.write l }
         end
       end
 
@@ -63,12 +63,13 @@ eos
       ftmatch = aug.match(filter)
       raise AugeasSpec::Error, "Filter #{filter} within #{file} matched #{ftmatch.size} nodes, should match at least one" if ftmatch.empty?
 
-      begin
+      loop do
         # Loop on aug_match as path indexes will change as we move nodes
         fp = ftmatch.first
-        aug.mv(fp, "#{tmpaug}/#{fp.split(/\//)[-1]}")
+        aug.mv(fp, "#{tmpaug}/#{fp.split(%r{/})[-1]}")
         ftmatch = aug.match(filter)
-      end while !ftmatch.empty?
+        break if ftmatch.empty?
+      end
 
       aug.save!
     end

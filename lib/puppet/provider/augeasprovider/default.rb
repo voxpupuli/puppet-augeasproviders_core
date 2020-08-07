@@ -240,22 +240,15 @@ Puppet::Type.type(:augeasprovider).provide(:default) do
       when :string
         aug.get(rpath)
       when :array
-        if split_by
-          (aug.get(rpath) || '').split(split_by)
-        else
-          aug.match(rpath).map { |p|
-            if sublabel.nil?
-              aug.get(p)
-            else
-              sp = if sublabel == :seq
-                     "#{p}/*[label()=~regexp('[0-9]+')]"
-                   else
-                     "#{p}/#{sublabel}"
-                   end
-              aug.match(sp).map { |spp| aug.get(spp) }
-            end
-          }.flatten
-        end
+        return (aug.get(rpath) || '').split(split_by) if split_by
+        aug.match(rpath).map { |p|
+          if sublabel.nil?
+            aug.get(p)
+          else
+            sp = (sublabel == :seq) ? "#{p}/*[label()=~regexp('[0-9]+')]" : "#{p}/#{sublabel}"
+            aug.match(sp).map { |spp| aug.get(spp) }
+          end
+        }.flatten
       when :hash
         values = {}
         aug.match(rpath).each do |p|
@@ -301,8 +294,8 @@ Puppet::Type.type(:augeasprovider).provide(:default) do
 
     rpath = (label == :resource) ? '$resource' : "$resource/#{label}"
 
-    if type == :hash and sublabel.nil?
-      raise(Puppet::Error, "You must provide a sublabel for type hash")
+    if type == :hash && sublabel.nil?
+      raise(Puppet::Error, 'You must provide a sublabel for type hash')
     end
 
     unless [:string, :array, :hash].include? type
@@ -326,32 +319,30 @@ Puppet::Type.type(:augeasprovider).provide(:default) do
       when :array
         if args[0].nil? || args[0].empty?
           aug.rm(rpath)
+        elsif split_by
+          aug.set(rpath, args[0].join(split_by))
+        elsif sublabel.nil?
+          aug.rm(rpath)
+          count = 0
+          args[0].each do |v|
+            count += 1
+            aug.set("#{rpath}[#{count}]", v)
+          end
+        elsif sublabel == :seq
+          # Make sure only our values are used
+          aug.rm("#{rpath}/*[label()=~regexp('[0-9]+')]")
+          count = 0
+          args[0].each do |v|
+            count += 1
+            aug.set("#{rpath}/#{count}", v)
+          end
         else
-          if split_by
-            aug.set(rpath, args[0].join(split_by))
-          elsif sublabel.nil?
-            aug.rm(rpath)
-            count = 0
-            args[0].each do |v|
-              count += 1
-              aug.set("#{rpath}[#{count}]", v)
-            end
-          elsif sublabel == :seq
-            # Make sure only our values are used
-            aug.rm("#{rpath}/*[label()=~regexp('[0-9]+')]")
-            count = 0
-            args[0].each do |v|
-              count += 1
-              aug.set("#{rpath}/#{count}", v)
-            end
-          else
-            # Make sure only our values are used
-            aug.rm("#{rpath}/#{sublabel}")
-            count = 0
-            args[0].each do |v|
-              count += 1
-              aug.set("#{rpath}/#{sublabel}[#{count}]", v)
-            end
+          # Make sure only our values are used
+          aug.rm("#{rpath}/#{sublabel}")
+          count = 0
+          args[0].each do |v|
+            count += 1
+            aug.set("#{rpath}/#{sublabel}[#{count}]", v)
           end
         end
       when :hash
@@ -467,7 +458,7 @@ Puppet::Type.type(:augeasprovider).provide(:default) do
                 :double
               else
                 :none
-      end
+              end
     end
 
     case quote
@@ -501,7 +492,8 @@ Puppet::Type.type(:augeasprovider).provide(:default) do
       case Regexp.last_match(1)
       when '"' then :double
       when "'" then :single
-      else nil end
+      else nil
+      end
     else
       nil
     end
@@ -532,12 +524,10 @@ Puppet::Type.type(:augeasprovider).provide(:default) do
   def self.resource_path(resource = nil, &block)
     if block_given?
       @resource_path_block = block
+    elsif @resource_path_block
+      @resource_path_block.call(resource)
     else
-      if @resource_path_block
-        @resource_path_block.call(resource)
-      else
-        "#{target(resource)}/#{resource[:name]}"
-      end
+      "#{target(resource)}/#{resource[:name]}"
     end
   end
 

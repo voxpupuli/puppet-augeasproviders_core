@@ -1,6 +1,5 @@
-module AugeasSpec
-  class Error < StandardError
-  end
+module AugeasSpec end
+class AugeasSpec::Error < StandardError
 end
 
 require 'augeas_spec/augparse'
