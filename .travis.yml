@@ -20,7 +20,7 @@ rvm:
   - 2.5.7
 env:
   global:
-    - AUGEAS_LENS_LIB=lib/augeas/lenses:augeas/lenses
+    - AUGEAS_LENS_LIB=lib/augeas/lenses:spec/fixtures/augeas/lenses
 stages:
   - static
   - spec

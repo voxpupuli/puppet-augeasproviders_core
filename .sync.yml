@@ -5,7 +5,7 @@
   before_install_pre:
     - "travis_retry ./.travis.sh"
   global_env:
-    - AUGEAS_LENS_LIB=lib/augeas/lenses:augeas/lenses
+    - AUGEAS_LENS_LIB=lib/augeas/lenses:spec/fixtures/augeas/lenses
 Gemfile:
   required:
     ':development':
