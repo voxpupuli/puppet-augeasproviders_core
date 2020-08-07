@@ -311,7 +311,7 @@ describe provider_class do
 
         it 'does not call Augeas#close when not given a block' do
           Augeas.any_instance.expects(:close).never
-          aug = provider.augopen(resource)
+          provider.augopen(resource)
         end
       end
 
@@ -322,12 +322,12 @@ describe provider_class do
 
         it 'does not call Augeas#close when given a block' do
           Augeas.any_instance.expects(:close).never
-          aug = provider.augopen(resource)
+          provider.augopen(resource)
         end
 
         it 'does not call Augeas#close when not given a block' do
           Augeas.any_instance.expects(:close).never
-          aug = provider.augopen(resource)
+          provider.augopen(resource)
         end
 
         it 'calls Augeas#close when calling post_resource_eval' do
@@ -345,7 +345,7 @@ describe provider_class do
 
       it 'does not call #setvars when not given a block' do
         provider.expects(:setvars).never
-        aug = provider.augopen(resource)
+        provider.augopen(resource)
       end
 
       context 'with broken file' do
@@ -371,7 +371,7 @@ describe provider_class do
 
         it 'does not call Augeas#close when not given a block' do
           Augeas.any_instance.expects(:close).never
-          aug = provider.augopen!(resource)
+          provider.augopen!(resource)
         end
       end
 
@@ -382,12 +382,12 @@ describe provider_class do
 
         it 'does not call Augeas#close when given a block' do
           Augeas.any_instance.expects(:close).never
-          aug = provider.augopen!(resource)
+          provider.augopen!(resource)
         end
 
         it 'does not call Augeas#close when not given a block' do
           Augeas.any_instance.expects(:close).never
-          aug = provider.augopen!(resource)
+          provider.augopen!(resource)
         end
       end
 
@@ -398,7 +398,7 @@ describe provider_class do
 
       it 'does not call #setvars when not given a block' do
         provider.expects(:setvars).never
-        aug = provider.augopen!(resource)
+        provider.augopen!(resource)
       end
 
       context 'on Puppet < 3.4.0' do
@@ -413,7 +413,7 @@ describe provider_class do
 
         it 'does not call #augsave when not given a block' do
           provider.expects(:augsave!).never
-          aug = provider.augopen!(resource)
+          provider.augopen!(resource)
         end
       end
 
@@ -429,7 +429,7 @@ describe provider_class do
 
         it 'does not call #augsave when not given a block' do
           provider.expects(:augsave!).never
-          aug = provider.augopen!(resource)
+          provider.augopen!(resource)
         end
 
         it 'calls Augeas#close when calling post_resource_eval' do
@@ -464,7 +464,7 @@ describe provider_class do
         provider.augopen(resource) do |aug|
           # Prepare an invalid save
           provider.stubs(:debug)
-          aug.rm("/files#{thetarget}/*/ipaddr").should_not == 0
+          aug.rm("/files#{thetarget}/*/ipaddr").should_not eq(0)
           -> { provider.augsave!(aug) }.should raise_error Augeas::Error, %r{Failed to save Augeas tree}
         end
       end
@@ -706,7 +706,6 @@ describe provider_class do
         provider.attr_aug_writer(:foo, type: :hash, sublabel: 'sl', default: 'deflt')
         provider.method_defined?('attr_aug_writer_foo').should be true
 
-        rpath = "/files#{thetarget}/test/foo"
         provider.augopen(resource) do |aug|
           aug.expects(:rm).with('$resource/foo')
           aug.expects(:set).with("$resource/foo[.='baz']", 'baz')
