@@ -387,11 +387,6 @@ describe provider_class do
           Augeas.any_instance.expects(:close).never
           provider.augopen!(resource)
         end
-
-        it 'does not call Augeas#close when not given a block' do
-          Augeas.any_instance.expects(:close).never
-          provider.augopen!(resource)
-        end
       end
 
       it 'calls #setvars when given a block' do
