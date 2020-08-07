@@ -458,7 +458,7 @@ Puppet::Type.type(:augeasprovider).provide(:default) do
                 :double
               else
                 :none
-      end
+              end
     end
 
     case quote
