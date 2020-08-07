@@ -318,7 +318,7 @@ describe provider_class do
         end
 
         it 'does not call Augeas#close when not given a block' do
-          Augeas.any_instance.expects(:close).never
+          Augeas.any_instance.expects(:close).never # rubocop:disable RSpec/AnyInstance
           provider.augopen(resource)
         end
       end
@@ -329,7 +329,7 @@ describe provider_class do
         end
 
         it 'does not call Augeas#close when given a block' do
-          Augeas.any_instance.expects(:close).never
+          Augeas.any_instance.expects(:close).never # rubocop:disable RSpec/AnyInstance
           provider.augopen(resource)
         end
 
@@ -373,7 +373,7 @@ describe provider_class do
         end
 
         it 'does not call Augeas#close when not given a block' do
-          Augeas.any_instance.expects(:close).never
+          Augeas.any_instance.expects(:close).never # rubocop:disable RSpec/AnyInstance
           provider.augopen!(resource)
         end
       end
@@ -384,7 +384,7 @@ describe provider_class do
         end
 
         it 'does not call Augeas#close when given a block' do
-          Augeas.any_instance.expects(:close).never
+          Augeas.any_instance.expects(:close).never # rubocop:disable RSpec/AnyInstance
           provider.augopen!(resource)
         end
       end
@@ -519,7 +519,7 @@ describe provider_class do
         provider.attr_aug_reader(:foo, {})
         provider.method_defined?('attr_aug_reader_foo').should be true
 
-        Augeas.any_instance.expects(:get).with('$resource/foo').returns('bar')
+        Augeas.any_instance.expects(:get).with('$resource/foo').returns('bar') # rubocop:disable RSpec/AnyInstance
         provider.augopen(resource) do |aug|
           provider.attr_aug_reader_foo(aug).should == 'bar'
         end
