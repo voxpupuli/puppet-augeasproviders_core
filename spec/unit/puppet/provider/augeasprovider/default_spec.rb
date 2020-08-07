@@ -167,38 +167,51 @@ describe provider_class do
       end
     end
 
+
     describe '#parsed_as?' do
+      class AugeasFake end
+      let(:augeas_handler) {
+        AugeasFake.new
+      }
+
       context 'when text_store is supported' do
         it 'returns false when text_store fails' do
-          Augeas.any_instance.expects(:respond_to?).with(:text_store).returns(true)
-          Augeas.any_instance.expects(:set).with('/input', 'foo').returns(nil)
-          Augeas.any_instance.expects(:text_store).with('Baz.lns', '/input', '/parsed').returns(false)
+          Augeas.expects(:open).with(nil, nil, Augeas::NO_MODL_AUTOLOAD).yields(augeas_handler)
+          augeas_handler.expects(:respond_to?).with(:text_store).returns(true)
+          augeas_handler.expects(:set).with('/input', 'foo').returns(nil)
+          augeas_handler.expects(:text_store).with('Baz.lns', '/input', '/parsed').returns(false)
           provider.parsed_as?('foo', 'bar', 'Baz.lns').should == false
         end
 
         it 'returns false when path is not found' do
-          Augeas.any_instance.expects(:respond_to?).with(:text_store).returns(true)
-          Augeas.any_instance.expects(:set).with('/input', 'foo').returns(nil)
-          Augeas.any_instance.expects(:text_store).with('Baz.lns', '/input', '/parsed').returns(true)
-          Augeas.any_instance.expects(:match).with('/parsed/bar').returns([])
+          Augeas.expects(:open).with(nil, nil, Augeas::NO_MODL_AUTOLOAD).yields(augeas_handler)
+          augeas_handler.expects(:respond_to?).with(:text_store).returns(true)
+          augeas_handler.expects(:set).with('/input', 'foo').returns(nil)
+          augeas_handler.expects(:text_store).with('Baz.lns', '/input', '/parsed').returns(true)
+          augeas_handler.expects(:match).with('/parsed/bar').returns([])
           provider.parsed_as?('foo', 'bar', 'Baz.lns').should == false
         end
 
         it 'returns true when path is found' do
-          Augeas.any_instance.expects(:respond_to?).with(:text_store).returns(true)
-          Augeas.any_instance.expects(:set).with('/input', 'foo').returns(nil)
-          Augeas.any_instance.expects(:text_store).with('Baz.lns', '/input', '/parsed').returns(true)
-          Augeas.any_instance.expects(:match).with('/parsed/bar').returns(['/parsed/bar'])
+          Augeas.expects(:open).with(nil, nil, Augeas::NO_MODL_AUTOLOAD).yields(augeas_handler)
+          augeas_handler.expects(:respond_to?).with(:text_store).returns(true)
+          augeas_handler.expects(:set).with('/input', 'foo').returns(nil)
+          augeas_handler.expects(:text_store).with('Baz.lns', '/input', '/parsed').returns(true)
+          augeas_handler.expects(:match).with('/parsed/bar').returns(['/parsed/bar'])
           provider.parsed_as?('foo', 'bar', 'Baz.lns').should == true
         end
       end
 
       context 'when text_store is not supported' do
         it 'returns true if path is found in tempfile' do
-          Augeas.any_instance.expects(:respond_to?).with(:text_store).returns(false)
-          Augeas.any_instance.expects(:text_store).never
-          Augeas.any_instance.expects(:match).returns(['/files/tmp/aug_text_store20140410-8734-icc4xn/bar'])
+          Augeas.expects(:open).with(nil, nil, Augeas::NO_MODL_AUTOLOAD).yields(augeas_handler)
+          augeas_handler.expects(:respond_to?).with(:text_store).returns(false)
+          augeas_handler.expects(:text_store).never
+          augeas_handler.expects(:transform)
+          augeas_handler.expects(:load!)
+          augeas_handler.expects(:match).returns(['/files/tmp/aug_text_store20140410-8734-icc4xn/bar'])
           provider.parsed_as?('foo', 'bar', 'Baz.lns').should == true
+
         end
       end
     end
