@@ -5,9 +5,9 @@ require 'spec_helper'
 provider_class = Puppet::Type.type(:augeasprovider).provider(:default)
 
 describe provider_class do
-  let(:augeas_handler) {
+  let(:augeas_handler) do
     instance_double(Augeas)
-  }
+  end
 
   context 'empty provider' do
     class Empty < provider_class
@@ -171,7 +171,6 @@ describe provider_class do
       end
     end
 
-
     describe '#parsed_as?' do
       context 'when text_store is supported' do
         it 'returns false when text_store fails' do
@@ -210,7 +209,6 @@ describe provider_class do
           augeas_handler.expects(:load!)
           augeas_handler.expects(:match).returns(['/files/tmp/aug_text_store20140410-8734-icc4xn/bar'])
           provider.parsed_as?('foo', 'bar', 'Baz.lns').should == true
-
         end
       end
     end

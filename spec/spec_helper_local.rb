@@ -20,8 +20,6 @@ require 'puppetlabs_spec_helper/module_spec_helper'
 require 'augeas_spec'
 
 include RSpec::Mocks::ExampleMethods
-
-
 Puppet[:modulepath] = File.join(dir, 'fixtures', 'modules')
 
 # There's no real need to make this version dependent, but it helps find
@@ -35,7 +33,11 @@ Puppet[:modulepath] = File.join(dir, 'fixtures', 'modules')
 # ticket https://tickets.puppetlabs.com/browse/MODULES-823
 #
 ver = Gem::Version.new(Puppet.version.split('-').first)
-if Gem::Requirement.new('~> 2.7.20') =~ ver || Gem::Requirement.new('~> 3.0.0') =~ ver || Gem::Requirement.new('~> 3.5') =~ ver || Gem::Requirement.new('~> 4.0') =~ ver || Gem::Requirement.new('~> 5.0') =~ ver
+if Gem::Requirement.new('~> 2.7.20') =~ ver || \
+   Gem::Requirement.new('~> 3.0.0') =~ ver || \
+   Gem::Requirement.new('~> 3.5') =~ ver || \
+   Gem::Requirement.new('~> 4.0') =~ ver || \
+   Gem::Requirement.new('~> 5.0') =~ ver
   puts 'augeasproviders: setting Puppet[:libdir] to work around broken type autoloading'
   # libdir is only a single dir, so it can only workaround loading of one external module
   Puppet[:libdir] = "#{Puppet[:modulepath]}/augeasproviders_core/lib"
