@@ -240,22 +240,15 @@ Puppet::Type.type(:augeasprovider).provide(:default) do
       when :string
         aug.get(rpath)
       when :array
-        if split_by
-          (aug.get(rpath) || '').split(split_by)
-        else
-          aug.match(rpath).map { |p|
-            if sublabel.nil?
-              aug.get(p)
-            else
-              sp = if sublabel == :seq
-                     "#{p}/*[label()=~regexp('[0-9]+')]"
-                   else
-                     "#{p}/#{sublabel}"
-                   end
-              aug.match(sp).map { |spp| aug.get(spp) }
-            end
-          }.flatten
-        end
+        return (aug.get(rpath) || '').split(split_by) if split_by
+        aug.match(rpath).map { |p|
+          if sublabel.nil?
+            aug.get(p)
+          else
+            sp = (sublabel == :seq) ? "#{p}/*[label()=~regexp('[0-9]+')]" : "#{p}/#{sublabel}"
+            aug.match(sp).map { |spp| aug.get(spp) }
+          end
+        }.flatten
       when :hash
         values = {}
         aug.match(rpath).each do |p|
