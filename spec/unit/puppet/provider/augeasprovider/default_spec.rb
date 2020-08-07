@@ -5,6 +5,10 @@ require 'spec_helper'
 provider_class = Puppet::Type.type(:augeasprovider).provider(:default)
 
 describe provider_class do
+  let(:augeas_handler) {
+    instance_double(Augeas)
+  }
+
   context 'empty provider' do
     class Empty < provider_class
     end
@@ -169,11 +173,6 @@ describe provider_class do
 
 
     describe '#parsed_as?' do
-      class AugeasFake end
-      let(:augeas_handler) {
-        AugeasFake.new
-      }
-
       context 'when text_store is supported' do
         it 'returns false when text_store fails' do
           Augeas.expects(:open).with(nil, nil, Augeas::NO_MODL_AUTOLOAD).yields(augeas_handler)
