@@ -4,6 +4,7 @@ dist: xenial
 language: ruby
 cache: bundler
 before_install:
+  - travis_retry ./.travis.sh
   - bundle -v
   - rm -f Gemfile.lock
   - "# Update system gems if requested. This is useful to temporarily workaround troubles in the test runner"
