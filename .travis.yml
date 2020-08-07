@@ -18,6 +18,9 @@ script:
 bundler_args: --without system_tests
 rvm:
   - 2.5.7
+env:
+  global:
+    - AUGEAS_LENS_LIB=lib/augeas/lenses:augeas/lenses
 stages:
   - static
   - spec
