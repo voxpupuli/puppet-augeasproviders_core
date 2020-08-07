@@ -10,6 +10,7 @@ Gemfile:
   required:
     ':development':
       - gem: coveralls
+      - gem: ruby-augeas
 #spec/spec_helper.rb:
 #  ap_lib_loadpath: "$LOAD_PATH.unshift(dir, File.join(dir, 'lib'), File.join(dir, '..', 'lib'))"
 #  ap_load_core: false
