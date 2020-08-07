@@ -524,12 +524,10 @@ Puppet::Type.type(:augeasprovider).provide(:default) do
   def self.resource_path(resource = nil, &block)
     if block_given?
       @resource_path_block = block
+    elsif @resource_path_block
+      @resource_path_block.call(resource)
     else
-      if @resource_path_block
-        @resource_path_block.call(resource)
-      else
-        "#{target(resource)}/#{resource[:name]}"
-      end
+      "#{target(resource)}/#{resource[:name]}"
     end
   end
 
