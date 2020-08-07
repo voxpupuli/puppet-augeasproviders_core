@@ -333,11 +333,6 @@ describe provider_class do
           provider.augopen(resource)
         end
 
-        it 'does not call Augeas#close when not given a block' do
-          Augeas.any_instance.expects(:close).never
-          provider.augopen(resource)
-        end
-
         it 'calls Augeas#close when calling post_resource_eval' do
           provider.augopen(resource) do |aug|
             aug.expects(:close)
