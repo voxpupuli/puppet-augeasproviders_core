@@ -115,25 +115,25 @@ describe provider_class do
       end
 
       it 'double-quotes by default for values containing spaces or special characters' do
-        provider.quoteit('foo bar').should == '"foo bar"'
-        provider.quoteit('foo&bar').should == '"foo&bar"'
-        provider.quoteit('foo;bar').should == '"foo;bar"'
-        provider.quoteit('foo<bar').should == '"foo<bar"'
-        provider.quoteit('foo>bar').should == '"foo>bar"'
-        provider.quoteit('foo(bar').should == '"foo(bar"'
-        provider.quoteit('foo)bar').should == '"foo)bar"'
-        provider.quoteit('foo|bar').should == '"foo|bar"'
+        provider.quoteit('foo bar').should eq('"foo bar"')
+        provider.quoteit('foo&bar').should eq('"foo&bar"')
+        provider.quoteit('foo;bar').should eq('"foo;bar"')
+        provider.quoteit('foo<bar').should eq('"foo<bar"')
+        provider.quoteit('foo>bar').should eq('"foo>bar"')
+        provider.quoteit('foo(bar').should eq('"foo(bar"')
+        provider.quoteit('foo)bar').should eq('"foo)bar"')
+        provider.quoteit('foo|bar').should eq('"foo|bar"')
       end
 
       it 'calls #readquote and use its value when oldvalue is passed' do
-        provider.quoteit('foo', nil, "'bar'").should == "'foo'"
-        provider.quoteit('foo', nil, '"bar"').should == '"foo"'
-        provider.quoteit('foo', nil, 'bar').should == 'foo'
-        provider.quoteit('foo bar', nil, "'bar'").should == "'foo bar'"
+        provider.quoteit('foo', nil, "'bar'").should eq("'foo'")
+        provider.quoteit('foo', nil, '"bar"').should eq('"foo"')
+        provider.quoteit('foo', nil, 'bar').should eq('foo')
+        provider.quoteit('foo bar', nil, "'bar'").should eq("'foo bar'")
       end
 
       it 'double-quotes special values when oldvalue is not quoted' do
-        provider.quoteit('foo bar', nil, 'bar').should == '"foo bar"'
+        provider.quoteit('foo bar', nil, 'bar').should eq('"foo bar"')
       end
 
       it 'uses the :quoted parameter when present' do
@@ -141,14 +141,12 @@ describe provider_class do
         resource.stubs(:parameters).returns([:quoted])
 
         resource[:quoted] = :single
-        provider.quoteit('foo', resource).should == "'foo'"
-
+        provider.quoteit('foo', resource).should eq("'foo'")
         resource[:quoted] = :double
-        provider.quoteit('foo', resource).should == '"foo"'
-
+        provider.quoteit('foo', resource).should eq('"foo"')
         resource[:quoted] = :auto
-        provider.quoteit('foo', resource).should == 'foo'
-        provider.quoteit('foo bar', resource).should == '"foo bar"'
+        provider.quoteit('foo', resource).should eq('foo')
+        provider.quoteit('foo bar', resource).should eq('"foo bar"')
       end
     end
 
@@ -158,14 +156,14 @@ describe provider_class do
       end
 
       it 'does not do anything when value is badly quoted' do
-        provider.unquoteit('"foo bar').should == '"foo bar'
-        provider.unquoteit("'foo bar").should == "'foo bar"
-        provider.unquoteit("'foo bar\"").should == "'foo bar\""
+        provider.unquoteit('"foo bar').should eq('"foo bar')
+        provider.unquoteit("'foo bar").should eq("'foo bar")
+        provider.unquoteit("'foo bar\"").should eq("'foo bar\"")
       end
 
       it 'returns unquoted value' do
-        provider.unquoteit('"foo bar"').should == 'foo bar'
-        provider.unquoteit("'foo bar'").should == 'foo bar'
+        provider.unquoteit('"foo bar"').should eq('foo bar')
+        provider.unquoteit("'foo bar'").should eq('foo bar')
       end
     end
 
