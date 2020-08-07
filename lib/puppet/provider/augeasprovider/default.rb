@@ -492,7 +492,8 @@ Puppet::Type.type(:augeasprovider).provide(:default) do
       case Regexp.last_match(1)
       when '"' then :double
       when "'" then :single
-      else nil end
+      else nil
+      end
     else
       nil
     end
