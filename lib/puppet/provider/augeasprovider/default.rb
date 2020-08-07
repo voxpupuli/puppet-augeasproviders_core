@@ -319,32 +319,30 @@ Puppet::Type.type(:augeasprovider).provide(:default) do
       when :array
         if args[0].nil? || args[0].empty?
           aug.rm(rpath)
+        elsif split_by
+          aug.set(rpath, args[0].join(split_by))
+        elsif sublabel.nil?
+          aug.rm(rpath)
+          count = 0
+          args[0].each do |v|
+            count += 1
+            aug.set("#{rpath}[#{count}]", v)
+          end
+        elsif sublabel == :seq
+          # Make sure only our values are used
+          aug.rm("#{rpath}/*[label()=~regexp('[0-9]+')]")
+          count = 0
+          args[0].each do |v|
+            count += 1
+            aug.set("#{rpath}/#{count}", v)
+          end
         else
-          if split_by
-            aug.set(rpath, args[0].join(split_by))
-          elsif sublabel.nil?
-            aug.rm(rpath)
-            count = 0
-            args[0].each do |v|
-              count += 1
-              aug.set("#{rpath}[#{count}]", v)
-            end
-          elsif sublabel == :seq
-            # Make sure only our values are used
-            aug.rm("#{rpath}/*[label()=~regexp('[0-9]+')]")
-            count = 0
-            args[0].each do |v|
-              count += 1
-              aug.set("#{rpath}/#{count}", v)
-            end
-          else
-            # Make sure only our values are used
-            aug.rm("#{rpath}/#{sublabel}")
-            count = 0
-            args[0].each do |v|
-              count += 1
-              aug.set("#{rpath}/#{sublabel}[#{count}]", v)
-            end
+          # Make sure only our values are used
+          aug.rm("#{rpath}/#{sublabel}")
+          count = 0
+          args[0].each do |v|
+            count += 1
+            aug.set("#{rpath}/#{sublabel}[#{count}]", v)
           end
         end
       when :hash
