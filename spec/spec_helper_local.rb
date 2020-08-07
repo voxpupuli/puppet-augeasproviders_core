@@ -5,17 +5,15 @@ $LOAD_PATH.unshift(dir, File.join(dir, 'lib'), File.join(dir, '..', 'lib'))
 require 'rubygems'
 
 require 'simplecov'
-unless RUBY_VERSION =~ /^1\.8/
-  require 'coveralls'
-  SimpleCov.formatter = Coveralls::SimpleCov::Formatter
-end
+require 'coveralls'
+SimpleCov.formatter = Coveralls::SimpleCov::Formatter
 SimpleCov.start do
-  add_group "Puppet Types", "/lib/puppet/type/"
-  add_group "Puppet Providers", "/lib/puppet/provider/"
+  add_group 'Puppet Types', '/lib/puppet/type/'
+  add_group 'Puppet Providers', '/lib/puppet/provider/'
 
-  add_filter "/spec/fixtures/"
-  add_filter "/spec/unit/"
-  add_filter "/spec/support/"
+  add_filter '/spec/fixtures/'
+  add_filter '/spec/unit/'
+  add_filter '/spec/support/'
 end
 
 require 'puppetlabs_spec_helper/module_spec_helper'
@@ -34,11 +32,11 @@ Puppet[:modulepath] = File.join(dir, 'fixtures', 'modules')
 # ticket https://tickets.puppetlabs.com/browse/MODULES-823
 #
 ver = Gem::Version.new(Puppet.version.split('-').first)
-if Gem::Requirement.new("~> 2.7.20") =~ ver || Gem::Requirement.new("~> 3.0.0") =~ ver || Gem::Requirement.new("~> 3.5") =~ ver || Gem::Requirement.new("~> 4.0") =~ ver || Gem::Requirement.new("~> 5.0") =~ ver
-  puts "augeasproviders: setting Puppet[:libdir] to work around broken type autoloading"
+if Gem::Requirement.new('~> 2.7.20') =~ ver || Gem::Requirement.new('~> 3.0.0') =~ ver || Gem::Requirement.new('~> 3.5') =~ ver || Gem::Requirement.new('~> 4.0') =~ ver || Gem::Requirement.new('~> 5.0') =~ ver
+  puts 'augeasproviders: setting Puppet[:libdir] to work around broken type autoloading'
   # libdir is only a single dir, so it can only workaround loading of one external module
   Puppet[:libdir] = "#{Puppet[:modulepath]}/augeasproviders_core/lib"
 end
 
 # Load all shared contexts and shared examples
-Dir["#{dir}/support/**/*.rb"].sort.each {|f| require f}
+Dir["#{dir}/support/**/*.rb"].sort.each { |f| require f }

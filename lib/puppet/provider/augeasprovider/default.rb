@@ -301,8 +301,8 @@ Puppet::Type.type(:augeasprovider).provide(:default) do
 
     rpath = (label == :resource) ? '$resource' : "$resource/#{label}"
 
-    if type == :hash and sublabel.nil?
-      raise(Puppet::Error, "You must provide a sublabel for type hash")
+    if type == :hash && sublabel.nil?
+      raise(Puppet::Error, 'You must provide a sublabel for type hash')
     end
 
     unless [:string, :array, :hash].include? type
