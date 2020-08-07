@@ -72,25 +72,25 @@ describe provider_class do
       end
 
       it 'double-quotes by default for values containing spaces or special characters' do
-        provider.whichquote('foo bar').should == '"'
-        provider.whichquote('foo&bar').should == '"'
-        provider.whichquote('foo;bar').should == '"'
-        provider.whichquote('foo<bar').should == '"'
-        provider.whichquote('foo>bar').should == '"'
-        provider.whichquote('foo(bar').should == '"'
-        provider.whichquote('foo)bar').should == '"'
-        provider.whichquote('foo|bar').should == '"'
+        provider.whichquote('foo bar').should eq('"')
+        provider.whichquote('foo&bar').should eq('"')
+        provider.whichquote('foo;bar').should eq('"')
+        provider.whichquote('foo<bar').should eq('"')
+        provider.whichquote('foo>bar').should eq('"')
+        provider.whichquote('foo(bar').should eq('"')
+        provider.whichquote('foo)bar').should eq('"')
+        provider.whichquote('foo|bar').should eq('"')
       end
 
       it 'calls #readquote and use its value when oldvalue is passed' do
-        provider.whichquote('foo', nil, "'bar'").should == "'"
-        provider.whichquote('foo', nil, '"bar"').should == '"'
-        provider.whichquote('foo', nil, 'bar').should == ''
-        provider.whichquote('foo bar', nil, "'bar'").should == "'"
+        provider.whichquote('foo', nil, "'bar'").should eq("'")
+        provider.whichquote('foo', nil, '"bar"').should eq('"')
+        provider.whichquote('foo', nil, 'bar').should eq('')
+        provider.whichquote('foo bar', nil, "'bar'").should eq("'")
       end
 
       it 'double-quotes special values when oldvalue is not quoted' do
-        provider.whichquote('foo bar', nil, 'bar').should == '"'
+        provider.whichquote('foo bar', nil, 'bar').should eq('"')
       end
 
       it 'uses the :quoted parameter when present' do
@@ -98,14 +98,14 @@ describe provider_class do
         resource.stubs(:parameters).returns([:quoted])
 
         resource[:quoted] = :single
-        provider.whichquote('foo', resource).should == "'"
+        provider.whichquote('foo', resource).should eq("'")
 
         resource[:quoted] = :double
-        provider.whichquote('foo', resource).should == '"'
+        provider.whichquote('foo', resource).should eq('"')
 
         resource[:quoted] = :auto
-        provider.whichquote('foo', resource).should == ''
-        provider.whichquote('foo bar', resource).should == '"'
+        provider.whichquote('foo', resource).should eq('')
+        provider.whichquote('foo bar', resource).should eq('"')
       end
     end
 
