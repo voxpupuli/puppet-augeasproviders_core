@@ -26,7 +26,7 @@ stages:
   - spec
   - acceptance
   -
-    if: tag =~ ^v\d
+    if: tag =~ ^\d
     name: deploy
 jobs:
   fast_finish: true
@@ -34,10 +34,6 @@ jobs:
     -
       env: CHECK="check:symlinks check:git_ignore check:dot_underscore check:test_file rubocop syntax lint metadata_lint"
       stage: static
-    -
-      env: PUPPET_GEM_VERSION="~> 5.0" CHECK=parallel_spec
-      rvm: 2.4.5
-      stage: spec
     -
       env: PUPPET_GEM_VERSION="~> 6.0" CHECK=parallel_spec
       rvm: 2.5.7
@@ -47,8 +43,9 @@ jobs:
       stage: deploy
 branches:
   only:
-    - master
+    - main
     - /^v\d/
+    - master
 notifications:
   email: false
 deploy:

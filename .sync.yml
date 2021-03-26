@@ -6,6 +6,11 @@
     - "travis_retry ./.travis.sh"
   global_env:
     - AUGEAS_LENS_LIB=lib/augeas/lenses:spec/fixtures/augeas/lenses
+  branches:
+    - master
+  deploy_to_forge:
+    enabled: true
+    tag_regex: "^\\d"
 Gemfile:
   required:
     ':development':
