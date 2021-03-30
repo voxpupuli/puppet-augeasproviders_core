@@ -454,7 +454,7 @@ Puppet::Type.type(:augeasprovider).provide(:default) do
     if quote == :auto
       quote = if oldquote
                 oldquote
-              elsif value =~ %r{[|&;()<>\s]}
+              elsif value.match?(%r{[|&;()<>\s]})
                 :double
               else
                 :none
