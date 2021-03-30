@@ -519,8 +519,8 @@ describe provider_class do
         provider.attr_aug_reader(:foo, {})
         provider.method_defined?('attr_aug_reader_foo').should be true
 
-        expect(Augeas.any_instance).to receive(:get).with('$resource/foo').and_return('bar') # rubocop:disable RSpec/AnyInstance
         provider.augopen(resource) do |aug|
+          expect(aug).to receive(:get).with('$resource/foo').and_return('bar')
           provider.attr_aug_reader_foo(aug).should == 'bar'
         end
       end
