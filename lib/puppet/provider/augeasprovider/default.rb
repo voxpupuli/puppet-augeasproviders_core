@@ -412,7 +412,7 @@ Puppet::Type.type(:augeasprovider).provide(:default) do
   # @raise [Puppet::Error] if no block has been set when getting
   # @api public
   def self.lens(resource = nil, &block)
-    if block_given?
+    if block
       @lens_block = block
     else
       raise(Puppet::Error, 'Lens is not provided') unless @lens_block
@@ -445,7 +445,7 @@ Puppet::Type.type(:augeasprovider).provide(:default) do
   def self.whichquote(value, resource = nil, oldvalue = nil)
     oldquote = readquote oldvalue
 
-    quote = if resource && resource.parameters.include?(:quoted)
+    quote = if resource&.parameters&.include?(:quoted)
               resource[:quoted]
             else
               :auto
@@ -454,7 +454,7 @@ Puppet::Type.type(:augeasprovider).provide(:default) do
     if quote == :auto
       quote = if oldquote
                 oldquote
-              elsif value =~ %r{[|&;()<>\s]}
+              elsif value.match?(%r{[|&;()<>\s]})
                 :double
               else
                 :none
@@ -522,7 +522,7 @@ Puppet::Type.type(:augeasprovider).provide(:default) do
   # @see #target
   # @api public
   def self.resource_path(resource = nil, &block)
-    if block_given?
+    if block
       @resource_path_block = block
     elsif @resource_path_block
       @resource_path_block.call(resource)
@@ -691,7 +691,7 @@ Puppet::Type.type(:augeasprovider).provide(:default) do
         raise(Puppet::Error, "Augeas didn't load #{file} with #{lens}#{from}: #{message}")
       end
 
-      if block_given?
+      if block
         setvars(aug, resource)
         if yield_resource
           block.call(aug, resource, *yield_params)
@@ -705,7 +705,7 @@ Puppet::Type.type(:augeasprovider).provide(:default) do
       autosave = false
       raise
     ensure
-      if aug && block_given? && !supported?(:post_resource_eval)
+      if aug && block && !supported?(:post_resource_eval)
         augsave!(aug) if autosave
         augclose!(aug)
       end
