@@ -1,4 +1,5 @@
 module AugeasSpec end
+
 class AugeasSpec::Error < StandardError
 end
 
