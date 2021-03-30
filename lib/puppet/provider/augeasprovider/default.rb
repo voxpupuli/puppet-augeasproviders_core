@@ -445,7 +445,7 @@ Puppet::Type.type(:augeasprovider).provide(:default) do
   def self.whichquote(value, resource = nil, oldvalue = nil)
     oldquote = readquote oldvalue
 
-    quote = if resource && resource.parameters.include?(:quoted)
+    quote = if resource&.parameters&.include?(:quoted)
               resource[:quoted]
             else
               :auto
