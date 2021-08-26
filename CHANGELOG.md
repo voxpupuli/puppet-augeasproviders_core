@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.1.0
+
+- Allow stdlib 8.0.0 (GH #34)
+
 ## 3.0.0
 
 - Remove empty Hiera data (GH #29)
