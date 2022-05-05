@@ -19,11 +19,11 @@ module AugeasSpec::Augparse
       # Test module, Augeas reads back in the input file
       testaug = "#{dir}/test_augeasproviders.aug"
       File.open(testaug, 'w') do |tf|
-        tf.write(<<eos)
-module Test_Augeasproviders =
-  test #{lens} get Sys.read_file "#{dir}/input" =
-    #{result}
-eos
+        tf.write(<<~EOS)
+          module Test_Augeasproviders =
+            test #{lens} get Sys.read_file "#{dir}/input" =
+              #{result}
+        EOS
       end
 
       output = `augparse --notypecheck #{testaug} 2>&1`
@@ -53,7 +53,7 @@ eos
         lens: lens,
         name: lens.split('.')[0],
         incl: tmpout.path,
-        excl: [],
+        excl: []
       )
       aug.load!
       tmpaug = "/files#{tmpout.path}"

@@ -57,11 +57,12 @@ module AugeasSpec::Fixtures
         lens: lens,
         name: lens.split('.')[0],
         incl: file,
-        excl: [],
+        excl: []
       )
       aug.set('/augeas/context', "/files#{file}")
       aug.load!
       raise AugeasSpec::Error, "Augeas didn't load #{file}" if aug.match('.').empty?
+
       yield aug
     rescue Augeas::Error
       errors = []

@@ -204,7 +204,7 @@ describe provider_class do
         it 'returns true if path is found in tempfile' do
           expect(Augeas).to receive(:open).with(nil, nil, Augeas::NO_MODL_AUTOLOAD).and_yield(augeas_handler)
           expect(augeas_handler).to receive(:respond_to?).with(:text_store).and_return(false)
-          expect(augeas_handler).to receive(:text_store).never
+          expect(augeas_handler).not_to receive(:text_store)
           expect(augeas_handler).to receive(:transform)
           expect(augeas_handler).to receive(:load!)
           expect(augeas_handler).to receive(:match).and_return(['/files/tmp/aug_text_store20140410-8734-icc4xn/bar'])
@@ -302,12 +302,12 @@ describe provider_class do
     end
 
     describe '#augopen' do
-      before(:each) do
-        expect(provider).to receive(:augsave!).never # rubocop:disable RSpec/SubjectStub
+      before do
+        expect(provider).not_to receive(:augsave!) # rubocop:disable RSpec/SubjectStub
       end
 
       context 'on Puppet < 3.4.0' do
-        before :each do
+        before do
           allow(provider).to receive(:supported?).with(:post_resource_eval).and_return(false) # rubocop:disable RSpec/SubjectStub
         end
 
@@ -318,18 +318,18 @@ describe provider_class do
         end
 
         it 'does not call Augeas#close when not given a block' do
-          expect(Augeas.any_instance).to receive(:close).never # rubocop:disable RSpec/AnyInstance
+          expect(Augeas.any_instance).not_to receive(:close) # rubocop:disable RSpec/AnyInstance
           provider.augopen(resource)
         end
       end
 
       context 'on Puppet >= 3.4.0' do
-        before :each do
+        before do
           allow(provider).to receive(:supported?).with(:post_resource_eval).and_return(true) # rubocop:disable RSpec/SubjectStub
         end
 
         it 'does not call Augeas#close when given a block' do
-          expect(Augeas.any_instance).to receive(:close).never # rubocop:disable RSpec/AnyInstance
+          expect(Augeas.any_instance).not_to receive(:close) # rubocop:disable RSpec/AnyInstance
           provider.augopen(resource)
         end
 
@@ -347,7 +347,7 @@ describe provider_class do
       end
 
       it 'does not call #setvars when not given a block' do
-        expect(provider).to receive(:setvars).never # rubocop:disable RSpec/SubjectStub
+        expect(provider).not_to receive(:setvars) # rubocop:disable RSpec/SubjectStub
         provider.augopen(resource)
       end
 
@@ -362,7 +362,7 @@ describe provider_class do
 
     describe '#augopen!' do
       context 'on Puppet < 3.4.0' do
-        before :each do
+        before do
           allow(provider).to receive(:supported?).with(:post_resource_eval).and_return(false) # rubocop:disable RSpec/SubjectStub
         end
 
@@ -373,18 +373,18 @@ describe provider_class do
         end
 
         it 'does not call Augeas#close when not given a block' do
-          expect(Augeas.any_instance).to receive(:close).never # rubocop:disable RSpec/AnyInstance
+          expect(Augeas.any_instance).not_to receive(:close) # rubocop:disable RSpec/AnyInstance
           provider.augopen!(resource)
         end
       end
 
       context 'on Puppet >= 3.4.0' do
-        before :each do
+        before do
           allow(provider).to receive(:supported?).with(:post_resource_eval).and_return(true) # rubocop:disable RSpec/SubjectStub
         end
 
         it 'does not call Augeas#close when given a block' do
-          expect(Augeas.any_instance).to receive(:close).never # rubocop:disable RSpec/AnyInstance
+          expect(Augeas.any_instance).not_to receive(:close) # rubocop:disable RSpec/AnyInstance
           provider.augopen!(resource)
         end
       end
@@ -395,12 +395,12 @@ describe provider_class do
       end
 
       it 'does not call #setvars when not given a block' do
-        expect(provider).to receive(:setvars).never # rubocop:disable RSpec/SubjectStub
+        expect(provider).not_to receive(:setvars) # rubocop:disable RSpec/SubjectStub
         provider.augopen!(resource)
       end
 
       context 'on Puppet < 3.4.0' do
-        before :each do
+        before do
           allow(provider).to receive(:supported?).with(:post_resource_eval).and_return(false) # rubocop:disable RSpec/SubjectStub
         end
 
@@ -410,23 +410,23 @@ describe provider_class do
         end
 
         it 'does not call #augsave when not given a block' do
-          expect(provider).to receive(:augsave!).never # rubocop:disable RSpec/SubjectStub
+          expect(provider).not_to receive(:augsave!) # rubocop:disable RSpec/SubjectStub
           provider.augopen!(resource)
         end
       end
 
       context 'on Puppet >= 3.4.0' do
-        before :each do
+        before do
           allow(provider).to receive(:supported?).with(:post_resource_eval).and_return(true) # rubocop:disable RSpec/SubjectStub
         end
 
         it 'does not call #augsave when given a block' do
-          expect(provider).to receive(:augsave!).never # rubocop:disable RSpec/SubjectStub
+          expect(provider).not_to receive(:augsave!) # rubocop:disable RSpec/SubjectStub
           provider.augopen!(resource) { |aug| }
         end
 
         it 'does not call #augsave when not given a block' do
-          expect(provider).to receive(:augsave!).never # rubocop:disable RSpec/SubjectStub
+          expect(provider).not_to receive(:augsave!) # rubocop:disable RSpec/SubjectStub
           provider.augopen!(resource)
         end
 
@@ -448,11 +448,11 @@ describe provider_class do
 
       context 'when raising an exception in the block' do
         it 'toes raise the right exception' do
-          expect {
+          expect do
             provider.augopen! do |_aug|
               raise Puppet::Error, 'My error'
             end
-          }.to raise_error Puppet::Error, 'My error'
+          end.to raise_error Puppet::Error, 'My error'
         end
       end
     end
@@ -480,7 +480,7 @@ describe provider_class do
       it 'emulates Augeas#label when it is not available' do
         provider.augopen(resource) do |aug|
           expect(aug).to receive(:respond_to?).with(:label).and_return false
-          expect(aug).to receive(:label).with('/files/bar[4]').never
+          expect(aug).not_to receive(:label).with('/files/bar[4]')
           provider.path_label(aug, '/files/bar[4]').should == 'bar'
         end
       end
@@ -508,7 +508,7 @@ describe provider_class do
       it 'calls Augeas#defnode to set $target but not $resource when no resource is passed' do
         provider.augopen(resource) do |aug|
           expect(aug).to receive(:defnode).with('target', '/files/foo', nil)
-          expect(aug).to receive(:defvar).never
+          expect(aug).not_to receive(:defvar)
           provider.setvars(aug)
         end
       end
@@ -531,7 +531,7 @@ describe provider_class do
 
         provider.augopen(resource) do |aug|
           expect(aug).to receive(:get).with('$resource/foo').and_return('baz,bazz')
-          provider.attr_aug_reader_foo(aug).should == ['baz', 'bazz']
+          provider.attr_aug_reader_foo(aug).should == %w[baz bazz]
         end
       end
 
@@ -544,7 +544,7 @@ describe provider_class do
           expect(aug).to receive(:match).with('$resource/foo').and_return(["#{rpath}[1]", "#{rpath}[2]"])
           expect(aug).to receive(:get).with("#{rpath}[1]").and_return('baz')
           expect(aug).to receive(:get).with("#{rpath}[2]").and_return('bazz')
-          provider.attr_aug_reader_foo(aug).should == ['baz', 'bazz']
+          provider.attr_aug_reader_foo(aug).should == %w[baz bazz]
         end
       end
 
@@ -560,7 +560,7 @@ describe provider_class do
           expect(aug).to receive(:match).with("#{rpath}[2]/*[label()=~regexp('[0-9]+')]").and_return(["#{rpath}[2]/1", "#{rpath}[2]/2"])
           expect(aug).to receive(:get).with("#{rpath}[2]/1").and_return('val21')
           expect(aug).to receive(:get).with("#{rpath}[2]/2").and_return('val22')
-          provider.attr_aug_reader_foo(aug).should == ['val11', 'val21', 'val22']
+          provider.attr_aug_reader_foo(aug).should == %w[val11 val21 val22]
         end
       end
 
@@ -576,14 +576,14 @@ describe provider_class do
           expect(aug).to receive(:match).with("#{rpath}[2]/sl").and_return(["#{rpath}[2]/sl[1]", "#{rpath}[2]/sl[2]"])
           expect(aug).to receive(:get).with("#{rpath}[2]/sl[1]").and_return('val21')
           expect(aug).to receive(:get).with("#{rpath}[2]/sl[2]").and_return('val22')
-          provider.attr_aug_reader_foo(aug).should == ['val11', 'val21', 'val22']
+          provider.attr_aug_reader_foo(aug).should == %w[val11 val21 val22]
         end
       end
 
       it 'creates a class method using :hash and no sublabel' do
-        expect {
+        expect do
           provider.attr_aug_reader(:foo, type: :hash, default: 'deflt')
-        }.to raise_error(RuntimeError, %r{You must provide a sublabel})
+        end.to raise_error(RuntimeError, %r{You must provide a sublabel})
       end
 
       it 'creates a class method using :hash and sublabel' do
@@ -602,9 +602,9 @@ describe provider_class do
       end
 
       it 'creates a class method using wrong type' do
-        expect {
+        expect do
           provider.attr_aug_reader(:foo, type: :foo)
-        }.to raise_error(RuntimeError, %r{Invalid type: foo})
+        end.to raise_error(RuntimeError, %r{Invalid type: foo})
       end
     end
 
@@ -643,7 +643,7 @@ describe provider_class do
           provider.attr_aug_writer_foo(aug, ['bar'])
           # multiple values
           expect(aug).to receive(:set).with('$resource/foo', 'bar,baz')
-          provider.attr_aug_writer_foo(aug, ['bar', 'baz'])
+          provider.attr_aug_writer_foo(aug, %w[bar baz])
           # purge values
           expect(aug).to receive(:rm).with('$resource/foo')
           provider.attr_aug_writer_foo(aug, [])
@@ -662,7 +662,7 @@ describe provider_class do
           provider.attr_aug_writer_foo(aug)
           expect(aug).to receive(:rm).with('$resource/foo')
           expect(aug).to receive(:set).with('$resource/foo[2]', 'baz')
-          provider.attr_aug_writer_foo(aug, ['bar', 'baz'])
+          provider.attr_aug_writer_foo(aug, %w[bar baz])
         end
       end
 
@@ -676,7 +676,7 @@ describe provider_class do
           expect(aug).to receive(:rm).with("$resource/foo/*[label()=~regexp('[0-9]+')]")
           expect(aug).to receive(:set).with('$resource/foo/1', 'bar')
           expect(aug).to receive(:set).with('$resource/foo/2', 'baz')
-          provider.attr_aug_writer_foo(aug, ['bar', 'baz'])
+          provider.attr_aug_writer_foo(aug, %w[bar baz])
         end
       end
 
@@ -690,14 +690,14 @@ describe provider_class do
           expect(aug).to receive(:rm).with('$resource/foo/sl')
           expect(aug).to receive(:set).with('$resource/foo/sl[1]', 'bar')
           expect(aug).to receive(:set).with('$resource/foo/sl[2]', 'baz')
-          provider.attr_aug_writer_foo(aug, ['bar', 'baz'])
+          provider.attr_aug_writer_foo(aug, %w[bar baz])
         end
       end
 
       it 'creates a class method using :hash and no sublabel' do
-        expect {
+        expect do
           provider.attr_aug_writer(:foo, type: :hash, default: 'deflt')
-        }.to raise_error(RuntimeError, %r{You must provide a sublabel})
+        end.to raise_error(RuntimeError, %r{You must provide a sublabel})
       end
 
       it 'creates a class method using :hash and sublabel' do
@@ -709,15 +709,15 @@ describe provider_class do
           expect(aug).to receive(:set).with("$resource/foo[.='baz']", 'baz')
           expect(aug).to receive(:set).with("$resource/foo[.='baz']/sl", 'bazval')
           expect(aug).to receive(:set).with("$resource/foo[.='bazz']", 'bazz')
-          expect(aug).to receive(:set).with("$resource/foo[.='bazz']/sl", 'bazzval').never
+          expect(aug).not_to receive(:set).with("$resource/foo[.='bazz']/sl", 'bazzval')
           provider.attr_aug_writer_foo(aug, 'baz' => 'bazval', 'bazz' => 'deflt')
         end
       end
 
       it 'creates a class method using wrong type' do
-        expect {
+        expect do
           provider.attr_aug_writer(:foo, type: :foo)
-        }.to raise_error(RuntimeError, %r{Invalid type: foo})
+        end.to raise_error(RuntimeError, %r{Invalid type: foo})
       end
     end
   end
