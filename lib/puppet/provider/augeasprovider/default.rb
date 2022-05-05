@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'augeas' if Puppet.features.augeas?
 
 # Base Augeas provider
@@ -156,7 +158,7 @@ Puppet::Type.type(:augeasprovider).provide(:default) do
         errors << "#{subnode} = #{subvalue}"
       end
     end
-    debug("Save failure details:\n" + errors.join("\n"))
+    debug("Save failure details:\n#{errors.join("\n")}")
     raise Augeas::Error, 'Failed to save Augeas tree to file. See debug logs for details.'
   ensure
     aug.load! if reload
