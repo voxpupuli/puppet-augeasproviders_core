@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module AugeasSpec end
 
 class AugeasSpec::Error < StandardError
@@ -12,7 +14,7 @@ RSpec.configure do |config|
   config.include AugeasSpec::Augparse
   config.include AugeasSpec::Fixtures
 
-  config.before :each do
+  config.before do
     allow(Puppet::Util::Storage).to receive(:store)
   end
 end
