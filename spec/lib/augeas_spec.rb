@@ -13,8 +13,4 @@ RSpec.configure do |config|
   config.extend AugeasSpec::Fixtures
   config.include AugeasSpec::Augparse
   config.include AugeasSpec::Fixtures
-
-  config.before do
-    allow(Puppet::Util::Storage).to receive(:store)
-  end
 end
