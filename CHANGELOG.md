@@ -4,6 +4,21 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v3.2.1](https://github.com/voxpupuli/puppet-augeasproviders_core/tree/v3.2.1) (2023-04-26)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-augeasproviders_core/compare/v3.2.0...v3.2.1)
+
+**Fixed bugs:**
+
+- Workaround libaugeas save/load issue [\#49](https://github.com/voxpupuli/puppet-augeasproviders_core/pull/49) ([h-haaks](https://github.com/h-haaks))
+
+**Merged pull requests:**
+
+- Use expect\(\) instead of .should [\#45](https://github.com/voxpupuli/puppet-augeasproviders_core/pull/45) ([ekohl](https://github.com/ekohl))
+- Fix broken Apache-2 license [\#44](https://github.com/voxpupuli/puppet-augeasproviders_core/pull/44) ([bastelfreak](https://github.com/bastelfreak))
+- rspec: Remove Puppet::Util::Storage mock [\#42](https://github.com/voxpupuli/puppet-augeasproviders_core/pull/42) ([lollipopman](https://github.com/lollipopman))
+- Update git:// github.com submodule URL to use https:// [\#38](https://github.com/voxpupuli/puppet-augeasproviders_core/pull/38) ([jamespwilliams](https://github.com/jamespwilliams))
+
 ## [v3.2.0](https://github.com/voxpupuli/puppet-augeasproviders_core/tree/v3.2.0) (2022-05-06)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-augeasproviders_core/compare/3.1.0...v3.2.0)

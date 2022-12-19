@@ -1,6 +1,6 @@
 {
   "name": "puppet-augeasproviders_core",
-  "version": "3.2.1-rc0",
+  "version": "3.2.1",
   "author": "Vox Pupuli",
   "summary": "Alternative Augeas-based providers for Puppet",
   "license": "Apache-2.0",
