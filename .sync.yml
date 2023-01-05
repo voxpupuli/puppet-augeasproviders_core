@@ -1,4 +1,6 @@
 ---
+.github/workflows/ci.yml:
+  additional_packages: 'libaugeas-dev'
 Gemfile:
   optional:
     ':test':
