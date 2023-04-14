@@ -307,38 +307,15 @@ describe provider_class do
         expect(provider).not_to receive(:augsave!) # rubocop:disable RSpec/SubjectStub
       end
 
-      context 'on Puppet < 3.4.0' do
-        before do
-          allow(provider).to receive(:supported?).with(:post_resource_eval).and_return(false) # rubocop:disable RSpec/SubjectStub
-        end
-
-        it 'calls Augeas#close when given a block' do
-          provider.augopen(resource) do |aug|
-            expect(aug).to receive(:close)
-          end
-        end
-
-        it 'does not call Augeas#close when not given a block' do
-          expect(Augeas.any_instance).not_to receive(:close) # rubocop:disable RSpec/AnyInstance
-          provider.augopen(resource)
-        end
+      it 'does not call Augeas#close when given a block' do
+        expect(Augeas.any_instance).not_to receive(:close) # rubocop:disable RSpec/AnyInstance
+        provider.augopen(resource)
       end
 
-      context 'on Puppet >= 3.4.0' do
-        before do
-          allow(provider).to receive(:supported?).with(:post_resource_eval).and_return(true) # rubocop:disable RSpec/SubjectStub
-        end
-
-        it 'does not call Augeas#close when given a block' do
-          expect(Augeas.any_instance).not_to receive(:close) # rubocop:disable RSpec/AnyInstance
-          provider.augopen(resource)
-        end
-
-        it 'calls Augeas#close when calling post_resource_eval' do
-          provider.augopen(resource) do |aug|
-            expect(aug).to receive(:close)
-            provider.post_resource_eval
-          end
+      it 'calls Augeas#close when calling post_resource_eval' do
+        provider.augopen(resource) do |aug|
+          expect(aug).to receive(:close)
+          provider.post_resource_eval
         end
       end
 
@@ -362,32 +339,9 @@ describe provider_class do
     end
 
     describe '#augopen!' do
-      context 'on Puppet < 3.4.0' do
-        before do
-          allow(provider).to receive(:supported?).with(:post_resource_eval).and_return(false) # rubocop:disable RSpec/SubjectStub
-        end
-
-        it 'calls Augeas#close when given a block' do
-          provider.augopen!(resource) do |aug|
-            expect(aug).to receive(:close)
-          end
-        end
-
-        it 'does not call Augeas#close when not given a block' do
-          expect(Augeas.any_instance).not_to receive(:close) # rubocop:disable RSpec/AnyInstance
-          provider.augopen!(resource)
-        end
-      end
-
-      context 'on Puppet >= 3.4.0' do
-        before do
-          allow(provider).to receive(:supported?).with(:post_resource_eval).and_return(true) # rubocop:disable RSpec/SubjectStub
-        end
-
-        it 'does not call Augeas#close when given a block' do
-          expect(Augeas.any_instance).not_to receive(:close) # rubocop:disable RSpec/AnyInstance
-          provider.augopen!(resource)
-        end
+      it 'does not call Augeas#close when given a block' do
+        expect(Augeas.any_instance).not_to receive(:close) # rubocop:disable RSpec/AnyInstance
+        provider.augopen!(resource)
       end
 
       it 'calls #setvars when given a block' do
@@ -400,42 +354,20 @@ describe provider_class do
         provider.augopen!(resource)
       end
 
-      context 'on Puppet < 3.4.0' do
-        before do
-          allow(provider).to receive(:supported?).with(:post_resource_eval).and_return(false) # rubocop:disable RSpec/SubjectStub
-        end
-
-        it 'calls #augsave when given a block' do
-          expect(provider).to receive(:augsave!) # rubocop:disable RSpec/SubjectStub
-          provider.augopen!(resource) { |aug| }
-        end
-
-        it 'does not call #augsave when not given a block' do
-          expect(provider).not_to receive(:augsave!) # rubocop:disable RSpec/SubjectStub
-          provider.augopen!(resource)
-        end
+      it 'does not call #augsave when given a block' do
+        expect(provider).not_to receive(:augsave!) # rubocop:disable RSpec/SubjectStub
+        provider.augopen!(resource) { |aug| }
       end
 
-      context 'on Puppet >= 3.4.0' do
-        before do
-          allow(provider).to receive(:supported?).with(:post_resource_eval).and_return(true) # rubocop:disable RSpec/SubjectStub
-        end
+      it 'does not call #augsave when not given a block' do
+        expect(provider).not_to receive(:augsave!) # rubocop:disable RSpec/SubjectStub
+        provider.augopen!(resource)
+      end
 
-        it 'does not call #augsave when given a block' do
-          expect(provider).not_to receive(:augsave!) # rubocop:disable RSpec/SubjectStub
-          provider.augopen!(resource) { |aug| }
-        end
-
-        it 'does not call #augsave when not given a block' do
-          expect(provider).not_to receive(:augsave!) # rubocop:disable RSpec/SubjectStub
-          provider.augopen!(resource)
-        end
-
-        it 'calls Augeas#close when calling post_resource_eval' do
-          provider.augopen(resource) do |aug|
-            expect(aug).to receive(:close)
-            provider.post_resource_eval
-          end
+      it 'calls Augeas#close when calling post_resource_eval' do
+        provider.augopen(resource) do |aug|
+          expect(aug).to receive(:close)
+          provider.post_resource_eval
         end
       end
 

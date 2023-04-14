@@ -33,7 +33,6 @@ Puppet::Type.type(:augeasprovider).provide(:default) do
   # The following features are currently supported:
   #
   # * `:regexpi`: whether Augeas supports an 'i' flag in regexp expressions
-  # * `:post_resource_eval`: whether Puppet supports `post_resource_eval` hooks
   #
   # @param [Symbol] feature the feature to check
   # @return [Boolean] whether feature is supported
@@ -42,8 +41,6 @@ Puppet::Type.type(:augeasprovider).provide(:default) do
     case feature
     when :regexpi
       Puppet::Util::Package.versioncmp(aug_version, '1.0.0') >= 0
-    when :post_resource_eval
-      Puppet::Util::Package.versioncmp(Puppet.version, '3.4.0') >= 0
     else
       raise Puppet::Error, "Unknown feature '#{feature}'"
     end
@@ -60,19 +57,12 @@ Puppet::Type.type(:augeasprovider).provide(:default) do
     (last + 1).to_s
   end
 
-  # Returns an Augeas handler.
-  #
-  # On Puppet >= 3.4, stores and returns a shared Augeas handler
-  # for all instances of the class
+  # Returns a shared Augeas handler for all instances of the class
   #
   # @return [Augeas] Augeas shared Augeas handle
   # @api private
   def self.aug_handler
-    if supported?(:post_resource_eval)
-      @aug ||= Augeas.open(nil, loadpath, Augeas::NO_MODL_AUTOLOAD)
-    else
-      Augeas.open(nil, loadpath, Augeas::NO_MODL_AUTOLOAD)
-    end
+    @aug_handler ||= Augeas.open(nil, loadpath, Augeas::NO_MODL_AUTOLOAD)
   end
 
   # Close the shared Augeas handler.
@@ -86,12 +76,9 @@ Puppet::Type.type(:augeasprovider).provide(:default) do
   # Opens Augeas and returns a handle to use.  It loads only the file
   # identified by {#target} (and the supplied `resource`) using {#lens}.
   #
-  # If called with a block, this will be yielded to and the Augeas handle
-  # closed after the block has executed (on Puppet < 3.4.0).
+  # If called with a block, this will be yielded to and the Augeas handle.
   # Otherwise, the handle will be returned and not closed automatically.
-  # On Puppet >= 3.4, the handle will be closed by `post_resource_eval`.
-  # On older versions, the caller is responsible for closing it to free
-  # resources.
+  # The handle will be closed by `post_resource_eval`.
   #
   # If `yield_resource` is set to true, the supplied `resource` will be passed
   # as a yieldparam to the block, after the `aug` handle. Any arguments passed
@@ -115,12 +102,9 @@ Puppet::Type.type(:augeasprovider).provide(:default) do
   # for the current Puppet resource using {AugeasProviders::Provider::ClassMethods#lens}.
   # #augsave! is called after the block is evaluated.
   #
-  # If called with a block, this will be yielded to and the Augeas handle
-  # closed after the block has executed (on Puppet < 3.4.0).
+  # If called with a block, this will be yielded to and the Augeas handle.
   # Otherwise, the handle will be returned and not closed automatically.
-  # On Puppet >= 3.4, the handle will be closed by `post_resource_eval`.
-  # On older versions, the caller is responsible for closing it to free
-  # resources.
+  # The handle will be closed by `post_resource_eval`.
   #
   # If `yield_resource` is set to true, the supplied `resource` will be passed
   # as a yieldparam to the block, after the `aug` handle. Any arguments passed
@@ -609,11 +593,10 @@ Puppet::Type.type(:augeasprovider).provide(:default) do
   end
 
   # Sets the post_resource_eval class hook for Puppet
-  # This is only used with Puppet > 3.4.0
-  # and allows to clean the shared Augeas handler.
+  # This allows to clean the shared Augeas handler.
   def self.post_resource_eval
     augclose!(aug_handler)
-    @aug = nil
+    @aug_handler = nil
   end
 
   # Returns a set of load paths to use when initialising Augeas.
@@ -629,19 +612,15 @@ Puppet::Type.type(:augeasprovider).provide(:default) do
   # Opens Augeas and returns a handle to use.  It loads only the file
   # identified by {#target} (and the supplied `resource`) using {#lens}.
   #
-  # If called with a block, this will be yielded to and the Augeas handle
-  # closed after the block has executed (on Puppet < 3.4.0).
+  # If called with a block, this will be yielded to and the Augeas handle.
   # Otherwise, the handle will be returned and not closed automatically.
-  # On Puppet >= 3.4, the handle will be closed by `post_resource_eval`.
-  # On older versions, the caller is responsible for closing it to free
-  # resources.
+  # The handle will be closed by `post_resource_eval`.
   #
   # If `yield_resource` is set to true, the supplied `resource` will be passed
   # as a yieldparam to the block, after the `aug` handle. Any arguments passed
   # after `yield_resource` will be added as yieldparams to the block.
   #
   # @param [Puppet::Resource] resource resource being evaluated
-  # @param [Boolean] autosave whether to call augsave! automatically after the block evaluation
   # @param [Boolean] yield_resource whether to send `resource` as a yieldparam
   # @param [Splat] yield_params a splat of parameters to pass as yieldparams if `yield_resource` is true
   # @return [Augeas] Augeas handle if no block is given
@@ -651,7 +630,7 @@ Puppet::Type.type(:augeasprovider).provide(:default) do
   # @yieldparam [Splat] *yield_params a splat of additional arguments sent to the block, if `yield_resource` is set to true
   # @raise [Puppet::Error] if Augeas did not load the file
   # @api private
-  def self.augopen_internal(resource = nil, autosave = false, yield_resource = false, *yield_params, &block)
+  def self.augopen_internal(resource = nil, yield_resource = false, *yield_params, &block)
     aug = aug_handler
     file = target(resource)
     begin
@@ -692,13 +671,7 @@ Puppet::Type.type(:augeasprovider).provide(:default) do
         aug
       end
     rescue StandardError
-      autosave = false
       raise
-    ensure
-      if aug && block && !supported?(:post_resource_eval)
-        augsave!(aug) if autosave
-        augclose!(aug)
-      end
     end
   end
 
@@ -715,7 +688,6 @@ Puppet::Type.type(:augeasprovider).provide(:default) do
   # The following features are currently supported:
   #
   # * `:regexpi`: whether Augeas supports an 'i' flag in regexp expressions
-  # * `:post_resource_eval`: whether Puppet supports `post_resource_eval` hooks
   #
   # @param [Symbol] feature the feature to check
   # @return [Boolean] whether feature is supported
@@ -727,12 +699,9 @@ Puppet::Type.type(:augeasprovider).provide(:default) do
   # Opens Augeas and returns a handle to use.  It loads only the file
   # for the current Puppet resource using {AugeasProviders::Provider::ClassMethods#lens}.
   #
-  # If called with a block, this will be yielded to and the Augeas handle
-  # closed after the block has executed (on Puppet < 3.4.0).
+  # If called with a block, this will be yielded to and the Augeas handle.
   # Otherwise, the handle will be returned and not closed automatically.
-  # On Puppet >= 3.4, the handle will be closed by `post_resource_eval`.
-  # On older versions, the caller is responsible for closing it to free
-  # resources.
+  # The handle will be closed by `post_resource_eval`.
   #
   # If `yield_resource` is set to true, the supplied `resource` will be passed
   # as a yieldparam to the block, after the `aug` handle. Any arguments passed
@@ -753,12 +722,9 @@ Puppet::Type.type(:augeasprovider).provide(:default) do
   # for the current Puppet resource using {AugeasProviders::Provider::ClassMethods#lens}.
   # #augsave! is called after the block is evaluated.
   #
-  # If called with a block, this will be yielded to and the Augeas handle
-  # closed after the block has executed (on Puppet < 3.4.0).
+  # If called with a block, this will be yielded to and the Augeas handle.
   # Otherwise, the handle will be returned and not closed automatically.
-  # On Puppet >= 3.4, the handle will be closed by `post_resource_eval`.
-  # On older versions, the caller is responsible for closing it to free
-  # resources.
+  # The handle will be closed by `post_resource_eval`.
   #
   # @return [Augeas] Augeas handle if no block is given
   # @yield [aug, resource, *yield_params] block that uses the Augeas handle
@@ -790,10 +756,7 @@ Puppet::Type.type(:augeasprovider).provide(:default) do
     self.class.augclose!(aug)
   end
 
-  # Returns an Augeas handler.
-  #
-  # On Puppet >= 3.4, stores and returns a shared Augeas handler
-  # for all instances of the class
+  # Stores and returns a shared Augeas handler for all instances of the class
   #
   # @return [Augeas] Augeas shared Augeas handle
   # @api private
@@ -922,14 +885,13 @@ Puppet::Type.type(:augeasprovider).provide(:default) do
 
   # Default method to flush a resource
   #
-  # On Puppet >= 3.4, this takes care of
-  # saving the tree for the shared Augeas handler.
+  # Takes care of saving the tree for the shared Augeas handler.
   #
   # This method can be overridden in your provider
   # but you should make sure to call `super`
-  # to ensure that the tree will be saved in Puppet >= 3.4
+  # to ensure that the tree will be saved.
   def flush
-    augsave!(aug_handler, true) if supported?(:post_resource_eval)
+    augsave!(aug_handler, true)
   end
 
   # Returns a node label to use for creating a new entry in an Augeas sequence
