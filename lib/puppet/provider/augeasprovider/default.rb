@@ -162,6 +162,10 @@ Puppet::Type.type(:augeasprovider).provide(:default) do
     raise Augeas::Error, 'Failed to save Augeas tree to file. See debug logs for details.'
   ensure
     aug.load! if reload
+    # https://github.com/hercules-team/augeas/commit/eb04250a05671b2d001444b72b8778328d209d75 introduced a bug in libaugeas.so.0.25.0
+    # bundled with puppet7.
+    # A temporary fix is to invoke load! twice.
+    aug.load! if reload && Puppet::Util::Package.versioncmp(aug_version, '1.13.0') >= 0
   end
 
   # Define a method with a block passed to #augopen

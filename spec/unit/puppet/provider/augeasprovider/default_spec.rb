@@ -467,6 +467,26 @@ describe provider_class do
           -> { provider.augsave!(aug) }.should raise_error Augeas::Error, %r{Failed to save Augeas tree}
         end
       end
+
+      describe 'with reload' do
+        it 'is expected to call #load! once with augeas < 1.13.0' do
+          provider.augopen(resource) do |aug|
+            allow(provider).to receive(:aug_version).twice.and_return '1.12.0' # rubocop:disable RSpec/SubjectStub
+            expect(aug).to receive(:load!).once
+            aug.set("/files#{thetarget}/dummy")
+            provider.augsave!(aug, true)
+          end
+        end
+
+        it 'is expected to call #load! twice with augeas >= 1.13.0' do
+          provider.augopen(resource) do |aug|
+            allow(provider).to receive(:aug_version).twice.and_return '1.13.0' # rubocop:disable RSpec/SubjectStub
+            expect(aug).to receive(:load!).twice
+            aug.set("/files#{thetarget}/dummy")
+            provider.augsave!(aug, true)
+          end
+        end
+      end
     end
 
     describe '#path_label' do
