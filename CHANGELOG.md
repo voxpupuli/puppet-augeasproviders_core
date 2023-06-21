@@ -4,6 +4,24 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v4.0.0](https://github.com/voxpupuli/puppet-augeasproviders_core/tree/v4.0.0) (2023-06-21)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-augeasproviders_core/compare/v3.2.1...v4.0.0)
+
+**Breaking changes:**
+
+- Drop Puppet 6 support [\#52](https://github.com/voxpupuli/puppet-augeasproviders_core/pull/52) ([bastelfreak](https://github.com/bastelfreak))
+
+**Implemented enhancements:**
+
+- Drop unneeded stdlib dependency [\#54](https://github.com/voxpupuli/puppet-augeasproviders_core/pull/54) ([bastelfreak](https://github.com/bastelfreak))
+- Add puppet 8 support [\#53](https://github.com/voxpupuli/puppet-augeasproviders_core/pull/53) ([bastelfreak](https://github.com/bastelfreak))
+- Add RHEL 9 to supported OS [\#46](https://github.com/voxpupuli/puppet-augeasproviders_core/pull/46) ([tuxmea](https://github.com/tuxmea))
+
+**Merged pull requests:**
+
+- Remove Puppet \< 3.4 compatibility code [\#47](https://github.com/voxpupuli/puppet-augeasproviders_core/pull/47) ([ekohl](https://github.com/ekohl))
+
 ## [v3.2.1](https://github.com/voxpupuli/puppet-augeasproviders_core/tree/v3.2.1) (2023-04-26)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-augeasproviders_core/compare/v3.2.0...v3.2.1)
