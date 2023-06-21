@@ -7,12 +7,7 @@
   "source": "https://github.com/voxpupuli/puppet-augeasproviders_core",
   "project_page": "https://github.com/voxpupuli/puppet-augeasproviders_core",
   "issues_url": "https://github.com/voxpupuli/puppet-augeasproviders_core/issues",
-  "dependencies": [
-    {
-      "name": "puppetlabs/stdlib",
-      "version_requirement": ">= 3.2.0 < 9.0.0"
-    }
-  ],
+  "dependencies": [],
   "operatingsystem_support": [
     {
       "operatingsystem": "Debian",
@@ -54,7 +49,7 @@
   "requirements": [
     {
       "name": "puppet",
-      "version_requirement": ">= 7.0.0 < 8.0.0"
+      "version_requirement": ">= 7.0.0 < 9.0.0"
     }
   ]
 }
