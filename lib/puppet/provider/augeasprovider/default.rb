@@ -95,7 +95,7 @@ Puppet::Type.type(:augeasprovider).provide(:default) do
   # @raise [Puppet::Error] if Augeas did not load the file
   # @api public
   def self.augopen(resource = nil, yield_resource = false, *yield_params, &block)
-    augopen_internal(resource, false, yield_resource, *yield_params, &block)
+    augopen_internal(resource, yield_resource, *yield_params, &block)
   end
 
   # Opens Augeas and returns a handle to use.  It loads only the file
@@ -121,7 +121,7 @@ Puppet::Type.type(:augeasprovider).provide(:default) do
   # @raise [Puppet::Error] if Augeas did not load the file
   # @api public
   def self.augopen!(resource = nil, yield_resource = false, *yield_params, &block)
-    augopen_internal(resource, true, yield_resource, *yield_params, &block)
+    augopen_internal(resource, yield_resource, *yield_params, &block)
   end
 
   # Saves all changes made in the current Augeas handle and checks for any
