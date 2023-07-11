@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v4.0.1](https://github.com/voxpupuli/puppet-augeasproviders_core/tree/v4.0.1) (2023-07-11)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-augeasproviders_core/compare/v4.0.0...v4.0.1)
+
+**Fixed bugs:**
+
+- Remove old arguments to augopen\_internal [\#58](https://github.com/voxpupuli/puppet-augeasproviders_core/pull/58) ([ekohl](https://github.com/ekohl))
+
 ## [v4.0.0](https://github.com/voxpupuli/puppet-augeasproviders_core/tree/v4.0.0) (2023-06-21)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-augeasproviders_core/compare/v3.2.1...v4.0.0)
