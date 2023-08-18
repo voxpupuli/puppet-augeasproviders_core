@@ -20,13 +20,11 @@ module AugeasSpec::Augparse
 
       # Test module, Augeas reads back in the input file
       testaug = "#{dir}/test_augeasproviders.aug"
-      File.open(testaug, 'w') do |tf|
-        tf.write(<<~EOS)
-          module Test_Augeasproviders =
-            test #{lens} get Sys.read_file "#{dir}/input" =
-              #{result}
-        EOS
-      end
+      File.write(testaug, <<~EOS)
+        module Test_Augeasproviders =
+          test #{lens} get Sys.read_file "#{dir}/input" =
+            #{result}
+      EOS
 
       output = `augparse --notypecheck #{testaug} 2>&1`
       raise AugeasSpec::Error, "augparse failed:\n#{output}" unless $CHILD_STATUS == 0 && output.empty?
