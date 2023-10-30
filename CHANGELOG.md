@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v4.1.0](https://github.com/voxpupuli/puppet-augeasproviders_core/tree/v4.1.0) (2023-10-30)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-augeasproviders_core/compare/v4.0.1...v4.1.0)
+
+**Implemented enhancements:**
+
+- Add Ubuntu 22.04 support [\#62](https://github.com/voxpupuli/puppet-augeasproviders_core/pull/62) ([bastelfreak](https://github.com/bastelfreak))
+- Add Debian 11 and 12 support [\#61](https://github.com/voxpupuli/puppet-augeasproviders_core/pull/61) ([bastelfreak](https://github.com/bastelfreak))
+
 ## [v4.0.1](https://github.com/voxpupuli/puppet-augeasproviders_core/tree/v4.0.1) (2023-07-11)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-augeasproviders_core/compare/v4.0.0...v4.0.1)
