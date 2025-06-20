@@ -9,7 +9,7 @@ module AugeasSpec::Fixtures
   # "let" or pass the path back via an "around" hook.
   def aug_fixture(name)
     tmp = Tempfile.new('target')
-    tmp.write(File.read(my_fixture(name)))
+    tmp.write(File.read("spec/fixtures/unit/puppet/provider/augeasprovider/default/#{name}"))
     tmp.close
     tmp
   end
