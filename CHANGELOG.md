@@ -4,6 +4,20 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v4.2.0](https://github.com/voxpupuli/puppet-augeasproviders_core/tree/v4.2.0) (2025-07-18)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-augeasproviders_core/compare/v4.1.0...v4.2.0)
+
+**Implemented enhancements:**
+
+- metadata.json: Add OpenVox [\#77](https://github.com/voxpupuli/puppet-augeasproviders_core/pull/77) ([jstraw](https://github.com/jstraw))
+
+**Fixed bugs:**
+
+- fix: setup logs in rspec fixtures lib [\#84](https://github.com/voxpupuli/puppet-augeasproviders_core/pull/84) ([TheMeier](https://github.com/TheMeier))
+- fix: setup logs in rspec fixtures lib [\#83](https://github.com/voxpupuli/puppet-augeasproviders_core/pull/83) ([TheMeier](https://github.com/TheMeier))
+- fix: inline `my_fixture` method from PSH [\#81](https://github.com/voxpupuli/puppet-augeasproviders_core/pull/81) ([TheMeier](https://github.com/TheMeier))
+
 ## [v4.1.0](https://github.com/voxpupuli/puppet-augeasproviders_core/tree/v4.1.0) (2023-10-30)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-augeasproviders_core/compare/v4.0.1...v4.1.0)
