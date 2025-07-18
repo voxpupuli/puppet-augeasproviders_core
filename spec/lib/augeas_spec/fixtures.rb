@@ -16,6 +16,11 @@ module AugeasSpec::Fixtures
 
   # Runs a particular resource via a catalog
   def apply(*resources)
+    if @logs.nil?
+      @logs = []
+      Puppet::Util::Log.newdestination(Puppet::Test::LogCollector.new(@logs))
+    end
+
     catalog = Puppet::Resource::Catalog.new
     catalog.host_config = false
     resources.each do |resource|
