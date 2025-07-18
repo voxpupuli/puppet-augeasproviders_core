@@ -28,6 +28,10 @@ module AugeasSpec::Fixtures
   def apply!(*resources)
     txn = apply(*resources)
 
+    if @logs.nil?
+      @logs = []
+      Puppet::Util::Log.newdestination(Puppet::Test::LogCollector.new(@logs))
+    end
     # Check for warning+ log messages
     loglevels = Puppet::Util::Log.levels[3, 999]
     firstlogs = @logs.dup
