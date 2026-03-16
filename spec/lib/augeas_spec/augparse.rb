@@ -53,7 +53,7 @@ module AugeasSpec::Augparse
         lens: lens,
         name: lens.split('.')[0],
         incl: tmpout.path,
-        excl: []
+        excl: [],
       )
       aug.load!
       tmpaug = "/files#{tmpout.path}"
