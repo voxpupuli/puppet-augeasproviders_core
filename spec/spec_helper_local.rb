@@ -7,6 +7,7 @@ $LOAD_PATH.unshift(dir, File.join(dir, 'lib'), File.join(dir, '..', 'lib'))
 require 'augeas_spec'
 
 include RSpec::Mocks::ExampleMethods
+
 Puppet[:modulepath] = File.join(dir, 'fixtures', 'modules')
 
 # Load all shared contexts and shared examples

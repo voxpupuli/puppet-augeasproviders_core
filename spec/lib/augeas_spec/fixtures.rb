@@ -68,7 +68,7 @@ module AugeasSpec::Fixtures
         lens: lens,
         name: lens.split('.')[0],
         incl: file,
-        excl: []
+        excl: [],
       )
       aug.set('/augeas/context', "/files#{file}")
       aug.load!

@@ -212,7 +212,7 @@ Puppet::Type.type(:augeasprovider).provide(:default) do
     sublabel = opts[:sublabel] || nil
     split_by = opts[:split_by] || nil
 
-    rpath = label == :resource ? '$resource' : "$resource/#{label}"
+    rpath = (label == :resource) ? '$resource' : "$resource/#{label}"
 
     raise(Puppet::Error, 'You must provide a sublabel for type hash') if type == :hash && sublabel.nil?
 
@@ -232,7 +232,7 @@ Puppet::Type.type(:augeasprovider).provide(:default) do
           if sublabel.nil?
             aug.get(p)
           else
-            sp = sublabel == :seq ? "#{p}/*[label()=~regexp('[0-9]+')]" : "#{p}/#{sublabel}"
+            sp = (sublabel == :seq) ? "#{p}/*[label()=~regexp('[0-9]+')]" : "#{p}/#{sublabel}"
             aug.match(sp).map { |spp| aug.get(spp) }
           end
         end.flatten
@@ -279,7 +279,7 @@ Puppet::Type.type(:augeasprovider).provide(:default) do
     rm_node = opts[:rm_node] || false
     split_by = opts[:split_by] || nil
 
-    rpath = label == :resource ? '$resource' : "$resource/#{label}"
+    rpath = (label == :resource) ? '$resource' : "$resource/#{label}"
 
     raise(Puppet::Error, 'You must provide a sublabel for type hash') if type == :hash && sublabel.nil?
 
@@ -582,7 +582,7 @@ Puppet::Type.type(:augeasprovider).provide(:default) do
             lens: lens,
             name: 'Text_store',
             incl: tmpfile.path.to_s,
-            excl: []
+            excl: [],
           )
           aug.load!
           return aug.match("/files#{tmpfile.path}/#{path}").any?
@@ -640,7 +640,7 @@ Puppet::Type.type(:augeasprovider).provide(:default) do
           lens: lens,
           name: lens_name,
           incl: file,
-          excl: []
+          excl: [],
         )
         aug.load!
       elsif aug.match("/augeas/load/#{lens_name}/incl[.='#{file}']").empty?
