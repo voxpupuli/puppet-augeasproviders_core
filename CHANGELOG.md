@@ -4,6 +4,21 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v5.0.0](https://github.com/voxpupuli/puppet-augeasproviders_core/tree/v5.0.0) (2026-03-16)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-augeasproviders_core/compare/v4.2.0...v5.0.0)
+
+**Breaking changes:**
+
+- Drop puppet, update openvox minimum version to 8.19 [\#85](https://github.com/voxpupuli/puppet-augeasproviders_core/pull/85) ([TheMeier](https://github.com/TheMeier))
+- drop support for Debian 7, 8 ,9, 10 Ubuntu 18.04, 20.04, 21.04 RedHat 5, 6, 7 and CentOS \(all versions\) [\#78](https://github.com/voxpupuli/puppet-augeasproviders_core/pull/78) ([Tonguechaude](https://github.com/Tonguechaude))
+
+**Implemented enhancements:**
+
+- Add OracleLinux support [\#90](https://github.com/voxpupuli/puppet-augeasproviders_core/pull/90) ([bwitt](https://github.com/bwitt))
+- Add Ubuntu 24.04 support [\#89](https://github.com/voxpupuli/puppet-augeasproviders_core/pull/89) ([bwitt](https://github.com/bwitt))
+- Add Debian 13 support [\#88](https://github.com/voxpupuli/puppet-augeasproviders_core/pull/88) ([bastelfreak](https://github.com/bastelfreak))
+
 ## [v4.2.0](https://github.com/voxpupuli/puppet-augeasproviders_core/tree/v4.2.0) (2025-07-18)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-augeasproviders_core/compare/v4.1.0...v4.2.0)
